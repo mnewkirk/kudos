@@ -1,7 +1,5 @@
 package com.matthewnewkirk.kudos.db;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,13 +61,9 @@ public class UserService {
         "select " + USER_ID + ", " + USER_NAME + ", " +
           USER_EMAIL + "\n" +
           " from " + USER_TABLE + "\n" +
-          " where " + USER_EMAIL + " = ?", new Object[]{email}, new RowMapper<User>() {
-          @Override
-          public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            User user = new User(rs.getInt(USER_ID), rs.getString(USER_NAME), rs.getString(USER_EMAIL));
-            return user;
-          }
-        });
+          " where " + USER_EMAIL + " = ?", new Object[]{email}, (rs, rowNum) -> {
+            return new User(rs.getInt(USER_ID), rs.getString(USER_NAME), rs.getString(USER_EMAIL));
+          });
     }
     catch (EmptyResultDataAccessException ex) {
       return null;
@@ -83,13 +76,9 @@ public class UserService {
         "select " + USER_ID + ", " + USER_NAME + ", " +
           USER_EMAIL + "\n" +
           " from " + USER_TABLE + "\n" +
-          " where " + USER_ID + " = ?", new Object[]{id}, new RowMapper<User>() {
-          @Override
-          public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            User user = new User(rs.getInt(USER_ID), rs.getString(USER_NAME), rs.getString(USER_EMAIL));
-            return user;
-          }
-        });
+          " where " + USER_ID + " = ?", new Object[]{id}, (rs, rowNum) -> {
+            return new User(rs.getInt(USER_ID), rs.getString(USER_NAME), rs.getString(USER_EMAIL));
+          });
     }
     catch (EmptyResultDataAccessException ex) {
       return null;

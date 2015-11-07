@@ -1,7 +1,5 @@
 package com.matthewnewkirk.kudos.db;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,13 +53,9 @@ public class KudoTextService {
       return jdbcTemplate.queryForObject(
         "select " + TEXT_ID + ", " + TEXT_KEYWORD + "\n" +
           " from " + TEXT_TABLE + "\n" +
-          " where " + TEXT_KEYWORD + " LIKE ?", new Object[]{text}, new RowMapper<KudoText>() {
-          @Override
-          public KudoText mapRow(ResultSet rs, int rowNum) throws SQLException {
-            KudoText kudoText = new KudoText(rs.getInt(TEXT_ID), rs.getString(TEXT_KEYWORD));
-            return kudoText;
-          }
-        });
+          " where " + TEXT_KEYWORD + " LIKE ?", new Object[]{text}, (rs, rowNum) -> {
+            return new KudoText(rs.getInt(TEXT_ID), rs.getString(TEXT_KEYWORD));
+          });
     }
     catch (EmptyResultDataAccessException ex) {
       return null;
@@ -74,19 +67,14 @@ public class KudoTextService {
       return jdbcTemplate.queryForObject(
         "select " + TEXT_ID + ", " + TEXT_KEYWORD + "\n" +
           " from " + TEXT_TABLE + "\n" +
-          " where " + TEXT_ID + " = ?", new Object[]{id}, new RowMapper<KudoText>() {
-          @Override
-          public KudoText mapRow(ResultSet rs, int rowNum) throws SQLException {
-            KudoText kudoText = new KudoText(rs.getInt(TEXT_ID), rs.getString(TEXT_KEYWORD));
-            return kudoText;
-          }
-        });
+          " where " + TEXT_ID + " = ?", new Object[]{id}, (rs, rowNum) -> {
+            return new KudoText(rs.getInt(TEXT_ID), rs.getString(TEXT_KEYWORD));
+          });
     }
     catch (EmptyResultDataAccessException ex) {
       return null;
     }
   }
-
 
   public static String createKudoTextTableQuery() {
     return "CREATE TABLE IF NOT EXISTS \n" +

@@ -1,15 +1,16 @@
 package com.matthewnewkirk.kudos;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.matthewnewkirk.kudos.containers.CompletedKudo;
 import com.matthewnewkirk.kudos.containers.Kudo;
 import com.matthewnewkirk.kudos.containers.KudoText;
 import com.matthewnewkirk.kudos.containers.User;
 import com.matthewnewkirk.kudos.db.KudoService;
 import com.matthewnewkirk.kudos.db.KudoTextService;
+import com.matthewnewkirk.kudos.db.ReportingService;
 import com.matthewnewkirk.kudos.db.TestDatabaseCleaner;
 import com.matthewnewkirk.kudos.db.UserService;
 
@@ -27,7 +28,7 @@ import org.testng.annotations.Test;
 @ContextConfiguration(locations =  "classpath*:spring-test.xml")
 @TestExecutionListeners(inheritListeners = false, listeners =
   {DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class})
-public class KudosApplicationTests extends AbstractTransactionalTestNGSpringContextTests {
+public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests {
 
   @Autowired
   private UserService userService;
@@ -39,13 +40,15 @@ public class KudosApplicationTests extends AbstractTransactionalTestNGSpringCont
   private KudoService kudoService;
 
   @Autowired
+  private ReportingService reportingService;
+
+  @Autowired
   private TestDatabaseCleaner testDatabaseCleaner;
 
   User bob = new User(0, "bob", "bob@example.com");
   User sue = new User(0, "sue", "sue@example.com");
   User alice = new User(0, "alice", "alice@example.com");
   KudoText kudoText = new KudoText("Awesome job building the kudo system!");
-  Kudo kudo;
 
   @BeforeClass
   public void createThings() {
@@ -53,11 +56,9 @@ public class KudosApplicationTests extends AbstractTransactionalTestNGSpringCont
     userService.findOrAdd(sue);
     userService.findOrAdd(alice);
     kudoTextService.add(kudoText);
-    List<User> usersTo = new ArrayList<>();
-    usersTo.add(sue);
-    usersTo.add(alice);
-    kudo = new Kudo(0, kudoText, bob, usersTo, new Date());
-    kudoService.add(kudo);
+    Date now = new Date();
+    kudoService.add(new Kudo(0, kudoText.getTextId(), bob.getUserId(), sue.getUserId(), now));
+    kudoService.add(new Kudo(0, kudoText.getTextId(), bob.getUserId(), alice.getUserId(), now));
   }
   @Test
   public void findOrAdd() {
@@ -79,9 +80,9 @@ public class KudosApplicationTests extends AbstractTransactionalTestNGSpringCont
 
   @Test
   public void findKudosFor() {
-    List<Kudo> foundKudos = kudoService.findKudosFor(alice);
+    List<CompletedKudo> foundKudos = reportingService.findKudosFor(alice);
     Assert.assertTrue(foundKudos.size() > 0, "Could not find a kudo for Alice.");
-    Kudo foundKudo = foundKudos.get(0);
+    CompletedKudo foundKudo = foundKudos.get(0);
     Assert.assertTrue(foundKudo.getUsersTo().size() == 2, "Kudo found did not have the correct number of To users.");
     Assert.assertEquals(foundKudo.getUserFrom(), bob, "Kudo found was not from Bob.");
     Assert.assertEquals(foundKudo.getText(), kudoText, "Kudo found was not of the correct text.");
@@ -89,34 +90,34 @@ public class KudosApplicationTests extends AbstractTransactionalTestNGSpringCont
 
   @Test
   public void findNoKudosFor() {
-    Assert.assertTrue(kudoService.findKudosFor(bob).isEmpty(), "Bob had a kudo but shouldn't have.");
+    Assert.assertTrue(reportingService.findKudosFor(bob).isEmpty(), "Bob had a kudo but shouldn't have.");
   }
 
   @Test
   public void findKudosFrom() {
-    List<Kudo> foundKudos = kudoService.findKudosFrom(bob);
+    List<CompletedKudo> foundKudos = reportingService.findKudosFrom(bob);
     Assert.assertTrue(foundKudos.size() > 0, "Could not find a kudo from Bob.");
-    Kudo foundKudo = foundKudos.get(0);
+    CompletedKudo foundKudo = foundKudos.get(0);
     Assert.assertTrue(foundKudo.getUsersTo().size() == 2, "Kudo found did not have the correct number of To users.");
     Assert.assertEquals(foundKudo.getUserFrom(), bob, "Kudo found was not from Bob.");
     Assert.assertEquals(foundKudo.getText(), kudoText, "Kudo found was not of the correct text.");
   }
   @Test
   public void findNoKudosFrom() {
-    Assert.assertTrue(kudoService.findKudosFrom(sue).isEmpty(), "Sue gave a kudo but shouldn't have.");
+    Assert.assertTrue(reportingService.findKudosFrom(sue).isEmpty(), "Sue gave a kudo but shouldn't have.");
   }
   @Test
   public void findKudosSince() {
-    List<Kudo> foundKudos = kudoService.findKudosSinceTime(new Date(1));
+    List<CompletedKudo> foundKudos = reportingService.findKudosSinceTime(new Date(1));
     Assert.assertTrue(foundKudos.size() > 0, "Could not find a kudo for Alice.");
-    Kudo foundKudo = foundKudos.get(0);
+    CompletedKudo foundKudo = foundKudos.get(0);
     Assert.assertTrue(foundKudo.getUsersTo().size() == 2, "Kudo found did not have the correct number of To users.");
     Assert.assertEquals(foundKudo.getUserFrom(), bob, "Kudo found was not from Bob.");
     Assert.assertEquals(foundKudo.getText(), kudoText, "Kudo found was not of the correct text.");
   }
   @Test
   public void findNoKudosSince() {
-    Assert.assertTrue(kudoService.findKudosSinceTime(new Date()).isEmpty(),
+    Assert.assertTrue(reportingService.findKudosSinceTime(new Date()).isEmpty(),
       "Somehow kudos were created at the same instant as our search!");
   }
   @AfterClass

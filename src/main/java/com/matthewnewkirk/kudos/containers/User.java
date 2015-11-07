@@ -32,6 +32,9 @@ public class User {
 
   @Override
   public boolean equals(Object obj) {
+    if (!User.class.isInstance(obj)) {
+      return false;
+    }
     User otherUser = (User) obj;
     return (userId == otherUser.getUserId() &&
     username.equals(otherUser.getUsername()) &&

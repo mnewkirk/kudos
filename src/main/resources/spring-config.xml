@@ -18,4 +18,8 @@
         class="com.matthewnewkirk.kudos.db.UserService">
     <property name="dataSource" ref="dataSource" />
   </bean>
+
+  <bean id="reportingService"
+        class="com.matthewnewkirk.kudos.db.ReportingService">
+  </bean>
 </beans>

@@ -50,8 +50,8 @@ public class KudosApplicationTests extends AbstractTransactionalTestNGSpringCont
   @BeforeClass
   public void createThings() {
     Assert.assertTrue(userService.add(bob));
-    Assert.assertTrue(userService.add(sue));
-    Assert.assertTrue(userService.add(alice));
+    userService.findOrAdd(sue);
+    userService.findOrAdd(alice);
     kudoTextService.add(kudoText);
     List<User> usersTo = new ArrayList<>();
     usersTo.add(sue);
@@ -59,11 +59,19 @@ public class KudosApplicationTests extends AbstractTransactionalTestNGSpringCont
     kudo = new Kudo(0, kudoText, bob, usersTo, new Date());
     kudoService.add(kudo);
   }
+  @Test
+  public void findOrAdd() {
+    User foundBob = userService.findOrAdd(bob);
+    Assert.assertEquals(foundBob, bob, "We 'found' bob.");
+    Assert.assertTrue(foundBob != bob, "Our 'found' bob is not the same object as bob.");
+  }
+
 	@Test ()
 	public void testUniqueEmail() {
     User notAlice = new User(0, "notAlice", "alice@example.com");
     Assert.assertFalse(userService.add(notAlice));
   }
+
   @Test
   public void findKudoTextLike() {
     Assert.assertNotNull(kudoTextService.findKudoTextLike("%kudo system%"));
@@ -80,6 +88,11 @@ public class KudosApplicationTests extends AbstractTransactionalTestNGSpringCont
   }
 
   @Test
+  public void findNoKudosFor() {
+    Assert.assertTrue(kudoService.findKudosFor(bob).isEmpty(), "Bob had a kudo but shouldn't have.");
+  }
+
+  @Test
   public void findKudosFrom() {
     List<Kudo> foundKudos = kudoService.findKudosFrom(bob);
     Assert.assertTrue(foundKudos.size() > 0, "Could not find a kudo from Bob.");
@@ -89,6 +102,10 @@ public class KudosApplicationTests extends AbstractTransactionalTestNGSpringCont
     Assert.assertEquals(foundKudo.getText(), kudoText, "Kudo found was not of the correct text.");
   }
   @Test
+  public void findNoKudosFrom() {
+    Assert.assertTrue(kudoService.findKudosFrom(sue).isEmpty(), "Sue gave a kudo but shouldn't have.");
+  }
+  @Test
   public void findKudosSince() {
     List<Kudo> foundKudos = kudoService.findKudosSinceTime(new Date(1));
     Assert.assertTrue(foundKudos.size() > 0, "Could not find a kudo for Alice.");
@@ -96,6 +113,11 @@ public class KudosApplicationTests extends AbstractTransactionalTestNGSpringCont
     Assert.assertTrue(foundKudo.getUsersTo().size() == 2, "Kudo found did not have the correct number of To users.");
     Assert.assertEquals(foundKudo.getUserFrom(), bob, "Kudo found was not from Bob.");
     Assert.assertEquals(foundKudo.getText(), kudoText, "Kudo found was not of the correct text.");
+  }
+  @Test
+  public void findNoKudosSince() {
+    Assert.assertTrue(kudoService.findKudosSinceTime(new Date()).isEmpty(),
+      "Somehow kudos were created at the same instant as our search!");
   }
   @AfterClass
   public void cleanUp() throws SQLException {

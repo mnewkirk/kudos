@@ -1,4 +1,5 @@
 # kudos
+[![Build Status](https://travis-ci.org/mnewkirk/kudos.svg?branch=master)](https://travis-ci.org/mnewkirk/kudos)
 [![Coverage Status](https://coveralls.io/repos/mnewkirk/kudos/badge.svg?branch=master&service=github)](https://coveralls.io/github/mnewkirk/kudos?branch=master)
 
 ##Kudos is a basic thank-you system to let people know that you appreciate them.

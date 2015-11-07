@@ -1,36 +1,39 @@
 package com.matthewnewkirk.kudos.containers;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author Matt Newkirk 11/7/2015
  */
 public class Kudo {
   private int kudoId;
-  private KudoText text;
-  private User userFrom;
-  private List<User> usersTo;
+  private int textId;
+  private int userFromId;
+  private int userToId;
   private Date date;
 
-  public Kudo(int kudoId, KudoText text, User userFrom, List<User> usersTo, Date date) {
+  public Kudo(int kudoId, int textId, int userFromId, int userToId, Date date) {
     this.kudoId = kudoId;
-    this.text = text;
-    this.userFrom = userFrom;
-    this.usersTo = usersTo;
+    this.textId = textId;
+    this.userFromId = userFromId;
+    this.userToId = userToId;
     this.date = date;
   }
 
-  public KudoText getText() {
-    return text;
+  public int getKudoId() {
+    return kudoId;
   }
 
-  public User getUserFrom() {
-    return userFrom;
+  public int getTextId() {
+    return textId;
   }
 
-  public List<User> getUsersTo() {
-    return usersTo;
+  public int getUserFromId() {
+    return userFromId;
+  }
+
+  public int getUserToId() {
+    return userToId;
   }
 
   public void setKudoId(int kudoId) {
@@ -43,16 +46,12 @@ public class Kudo {
 
   @Override
   public String toString() {
-    String output = "Kudo{" +
+    return "Kudo{" +
       "kudoId=" + kudoId +
-      ", text='" + text.toString() + '\'' +
-      ", userFrom=" + userFrom.getUsername() + " (" + userFrom.getEmail() + ")" +
-      ", usersTo=[";
-    for (User user : usersTo) {
-      output += user.getUserId() + "(" + user.getEmail() + "),";
-    }
-    output += "]" +
-      ", date=" + date.toString() + "}";
-    return output;
+      ", textId=" + textId +
+      ", userFromId=" + userFromId +
+      ", userToId=" + userToId +
+      ", date=" + date +
+      '}';
   }
 }

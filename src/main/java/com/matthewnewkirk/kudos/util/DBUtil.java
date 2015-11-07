@@ -22,4 +22,7 @@ public class DBUtil {
     DateFormat df = new SimpleDateFormat(TIMESTAMP_FORMAT);
     return df.format(timeWhenFoundDate);
   }
+  private DBUtil() {
+    // Intentionally empty.
+  }
 }

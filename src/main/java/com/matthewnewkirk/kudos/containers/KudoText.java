@@ -35,6 +35,9 @@ public class KudoText {
 
   @Override
   public boolean equals(Object obj) {
+    if (!KudoText.class.isInstance(obj)) {
+      return false;
+    }
     KudoText otherKudoText = (KudoText) obj;
     return textId == otherKudoText.getTextId() && text.equals(otherKudoText.getText());
   }

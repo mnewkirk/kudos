@@ -1,7 +1,5 @@
 package com.matthewnewkirk.kudos.containers;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -20,14 +18,6 @@ public class Kudo {
     this.text = text;
     this.userFrom = userFrom;
     this.usersTo = usersTo;
-    this.date = date;
-  }
-
-  public Kudo(int kudoId, KudoText text, User userFrom, User userTo, Date date) {
-    this.kudoId = kudoId;
-    this.text = text;
-    this.userFrom = userFrom;
-    usersTo = new ArrayList<User>(Arrays.asList(new User[]{userTo}));
     this.date = date;
   }
 

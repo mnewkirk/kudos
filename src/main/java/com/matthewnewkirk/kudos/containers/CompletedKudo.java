@@ -32,27 +32,4 @@ public class CompletedKudo {
   public List<User> getUsersTo() {
     return usersTo;
   }
-
-  public void setKudoId(int kudoId) {
-    this.kudoId = kudoId;
-  }
-
-  public Date getDate() {
-    return date;
-  }
-
-  @Override
-  public String toString() {
-    String output = "Kudo{" +
-      "kudoId=" + kudoId +
-      ", text='" + text.toString() + '\'' +
-      ", userFrom=" + userFrom.getUsername() + " (" + userFrom.getEmail() + ")" +
-      ", usersTo=[";
-    for (User user : usersTo) {
-      output += user.getUserId() + "(" + user.getEmail() + "),";
-    }
-    output += "]" +
-      ", date=" + date.toString() + "}";
-    return output;
-  }
 }

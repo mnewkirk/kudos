@@ -120,6 +120,21 @@ public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests 
     Assert.assertTrue(reportingService.findKudosSinceTime(new Date()).isEmpty(),
       "Somehow kudos were created at the same instant as our search!");
   }
+  @Test
+  public void cantFindKudoText() {
+    Assert.assertNull(kudoTextService.findKudoTextById(-1));
+    Assert.assertNull(kudoTextService.findKudoTextLike(""));
+  }
+  @Test
+  public void cantFindKudos() {
+    Assert.assertTrue(kudoService.findAllToUsersForSameKudoText(-1).isEmpty());
+    Assert.assertTrue(kudoService.findKudosGiven(KudoService.KUDO_TIME, "<", "0000-01-01 00:00:00").isEmpty());
+  }
+  @Test
+  public void cantFindUser() {
+    Assert.assertNull(userService.findUserByEmail(""));
+    Assert.assertNull(userService.findUserById(-1));
+  }
   @AfterClass
   public void cleanUp() throws SQLException {
     logger.info("running cleanUp");

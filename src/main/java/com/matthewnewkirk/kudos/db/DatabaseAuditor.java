@@ -12,4 +12,8 @@ public class DatabaseAuditor {
   void observeIdCreated(String table, String idKeyword, int id) {
     log.debug("Observing the addition of " + table + " : " + id);
   }
+
+  public void deleteInsertedItems() {
+    // Do nothing for production.
+  }
 }

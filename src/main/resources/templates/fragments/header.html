@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:fragment="headTag">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Kudos!</title>
+
+    <link href="../../css/kudos.css"
+          th:href="@{/css/kudos.css}" rel="stylesheet" />
+</head>
+<body>
+<form th:fragment="searchTag" action="#" th:action="@{/search}" th:object="${kudoSearch}" method="post">
+    # Kudos Displayed <input class="small" type="text" th:field="*{limitNumberOfKudosDisplayed}" value="100"/>
+    <input type="submit" value="Limit" /> <input type="reset" value="Reset" />
+</form>
+<form th:fragment="addKudo" action="#" th:action="@{/add}" th:object="${kudoToAdd}" method="post">
+    Who should receive the kudo? (e-mail address)<input type="text" th:field="*{userTo}"/>
+    Who is the kudo from? (e-mail address)<input type="text" th:field="*{userFrom}"/>
+    What did they do that was awesome?<input type="text" th:field="*{text}"/>
+    <input type="submit" value="Add Kudo"/> <input type="reset" value="Reset" />
+</form>
+</body>
+</html>

@@ -72,6 +72,25 @@ public class KudoService {
     }
   }
 
+  public List<Kudo> findLastNKudos(int numberOfKudosLimit) {
+    try {
+      String query = "select " + KUDO_ID + ", " + KUDO_TEXT_ID + "," +
+        KUDO_USER_TO_ID + "," + KUDO_USER_FROM_ID + ", " + KUDO_TIME + "\n" +
+        " from " + KUDO_TABLE + "\n" +
+        " ORDER BY " + KUDO_TIME + " DESC\n" +
+        " LIMIT ?";
+      return jdbcTemplate.query(query, new Object[]{numberOfKudosLimit},
+        (rs, rowNum) -> {
+          return new Kudo(rs.getInt(KUDO_ID), rs.getInt(KUDO_TEXT_ID),
+            rs.getInt(KUDO_USER_FROM_ID),
+            rs.getInt(KUDO_USER_TO_ID), rs.getDate(KUDO_TIME));
+        });
+    }
+    catch (EmptyResultDataAccessException ex) {
+      return new ArrayList<>();
+    }
+  }
+
   public List<Kudo> findKudosGiven(String whereKeyword, String operand, String searchFor) {
     try {
       String query = "select " + KUDO_ID + ", " + KUDO_TEXT_ID + "," +

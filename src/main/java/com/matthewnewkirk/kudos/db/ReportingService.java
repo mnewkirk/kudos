@@ -54,6 +54,12 @@ public class ReportingService {
     return completedKudosFromKudos(kudos);
   }
 
+  public List<CompletedKudo> findLastNKudos(int limit) {
+    List<Kudo> kudos =
+      kudoService.findLastNKudos(limit);
+    return completedKudosFromKudos(kudos);
+  }
+
   /**
    * Simplify our filling out a CompletedKudo here.
    */

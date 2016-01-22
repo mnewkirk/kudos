@@ -1,12 +1,15 @@
 language: java
 jdk:
-  - oraclejdk8
+- oraclejdk8
 before_install:
-  - pip install --user codecov
+- pip install --user codecov
 after_success:
-  - codecov
-  - mvn clean test jacoco:report coveralls:report
+- codecov
+- mvn clean test jacoco:report coveralls:report
 deploy:
   provider: heroku
   api_key:
-    secure: "562b649f-b673-4351-b99d-ce94c137272f"
+    secure: XNTuTcBu0kKfeieCL6U8b8y7Y9s/AZNWbvKRV+OigdFrR15Y2NcKAyWOCLTrIx97U9fS/Q9xrKmzHv9Bz9GIj7jzrHiXx23ZEe3DkJELpSJiKqXOZwLyBUVtasyXZHIQ73kGSFD+gTGEDg3JNM7fmki3IVQGLgnVPhIw7Y3NoJMdBJSDGRdAsYhzc2/ZHnrgteMRMlURxHiQPc8HsVC/7meA/L6y7JozMyc9nxu/12Cz7dq8cuOHsUkRW9QG7baJlv6rdh2lKxjC6skY32D3YI0plZSoNs813fMFKCDOJEdiUHWNl+WgSXTpd5aUmD/RsSd8OG5GXPWxR8g+FBEZJQsJ0UaMgFOWfagTIimw20MvYwgwJWpm3HmXtDkAsKv9y67Axw1+wxNqG05qM5j4IiIZ8eQb1oJFx09Q7Tf6PlIRYSWQ03X0ei0H6AW+5W+RLaIRluIcsRXGeLjFi0okfoHSqLyjhZeA2rKmZRTu4U5+xhxRXvwqjDRAuO4yZzWibPiwa/o7fsQFdp1tlH+3VPHnHvFF9bSqM3wSWTy9sh1SRMExZlPjsOER6Bm5AKFOUSi7VO5MKAYkuFY4XXC5cSijmOybdnO4X/5x+tpaF/eL8DUxK3xxfpQnlKcCyqjRyciBKBGTyor1mMmmcs2KWhR7JB34YnWFTZWqJIK1bl4=
+  app: kudos
+  on:
+    repo: mnewkirk/kudos

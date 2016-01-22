@@ -8,6 +8,7 @@ import com.matthewnewkirk.kudos.containers.CompletedKudo;
 import com.matthewnewkirk.kudos.containers.Kudo;
 import com.matthewnewkirk.kudos.containers.KudoText;
 import com.matthewnewkirk.kudos.containers.User;
+import com.matthewnewkirk.kudos.db.DatabaseAuditor;
 import com.matthewnewkirk.kudos.db.KudoService;
 import com.matthewnewkirk.kudos.db.KudoTextService;
 import com.matthewnewkirk.kudos.db.ReportingService;
@@ -20,11 +21,13 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+@WebAppConfiguration
 @ContextConfiguration(locations =  "classpath*:spring-test.xml")
 @TestExecutionListeners(inheritListeners = false, listeners =
   {DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class})
@@ -43,7 +46,7 @@ public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests 
   private ReportingService reportingService;
 
   @Autowired
-  private TestDatabaseCleaner testDatabaseCleaner;
+  private DatabaseAuditor testDatabaseCleaner;
 
   User bob = new User(0, "bob", "bob@example.com");
   User sue = new User(0, "sue", "sue@example.com");

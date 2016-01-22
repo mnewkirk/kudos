@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head th:replace="fragments/header :: headTag">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Kudos!</title>
+
+    <link href="../css/kudos.css"
+          th:href="@{/css/kudos.css}" rel="stylesheet" />
+</head>
+<body>
+<form th:replace="fragments/header :: addKudo" />
+<form th:replace="fragments/header :: searchTag"/>
+<form>
+    <div th:if="${foundKudos.foundKudos.size() > 0}">
+        <div th:each="kudo : ${foundKudos.foundKudos}">
+            <span th:text="${kudo.getUserFrom().getUsername()}">Bob</span>
+            <span> thanked </span>
+            <span th:each="kudoTo : ${kudo.getUsersTo()}">
+                <span th:text="${kudoTo.getUsername()}">Sue</span>
+            </span>
+            <span> for </span>
+            <span th:text="${kudo.getText()}">Being Awesome!</span>
+        </div>
+    </div>
+    <div th:if="${foundKudos.foundKudos.size() == 0}">
+        <span>No kudos found.</span>
+    </div>
+</form>
+</body>
+
+</html>

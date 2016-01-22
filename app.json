@@ -1,0 +1,11 @@
+{
+  "name": "kudos",
+  "scripts": {
+  },
+  "env": {
+  },
+  "addons": [
+    "papertrail",
+    "heroku-postgresql"
+  ]
+}

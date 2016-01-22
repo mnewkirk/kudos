@@ -12,20 +12,27 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * @author mnewkirk
  *         created 10/12/2015
  */
-public class TestJdbcTemplate {
-  private static final Logger log = LoggerFactory.getLogger(TestJdbcTemplate.class);
+public class TestH2Manager  {
+  private static final Logger log = LoggerFactory.getLogger(TestH2Manager.class);
   JdbcTemplate jdbcTemplate;
 
   @Autowired
   public void setDataSource(DataSource dataSource) {
     this.jdbcTemplate = new JdbcTemplate(dataSource);
-    manageTestDatabase();
   }
 
+  public void deleteTestDatabases() {
+    for (String table : new String[] { UserService.USER_TABLE,
+      KudoTextService.TEXT_TABLE,
+      KudoService.KUDO_TABLE}) {
+      log.info("dropping table " + table);
+      jdbcTemplate.execute("drop table if exists " + table);
+    }
+  }
   /**
    * If and only if we're connected to a test_schema, drop and create new tables.
    */
-  private void manageTestDatabase()  {
+  public void createTestDatabases()  {
     /*
     String error = "Not connected to a test database. NOT performing db management.";
     try {
@@ -38,13 +45,7 @@ public class TestJdbcTemplate {
       log.debug(error);
       return;
     }*/
-    log.debug("Creating tables");
-    for (String table : new String[] { UserService.USER_TABLE,
-      KudoTextService.TEXT_TABLE,
-      KudoService.KUDO_TABLE}) {
-      log.debug("dropping table " + table);
-      jdbcTemplate.execute("drop table if exists " + table);
-    }
+    log.info("Creating tables");
     jdbcTemplate.execute(UserService.createUserTableQuery());
     jdbcTemplate.execute(KudoTextService.createKudoTextTableQuery());
     jdbcTemplate.execute(KudoService.createKudoTableQuery());

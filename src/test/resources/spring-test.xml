@@ -22,13 +22,9 @@
         <property name="password" value="${jdbc.password}"/>
     </bean>
 
-  <bean id="jdbcTemplate"
-        class="com.matthewnewkirk.kudos.db.TestJdbcTemplate">
-    <property name="dataSource" ref="dataSource" />
-  </bean>
-
   <bean id="databaseAuditor"
         class="com.matthewnewkirk.kudos.db.TestDatabaseCleaner">
     <property name="dataSource" ref="dataSource" />
+
   </bean>
 </beans>

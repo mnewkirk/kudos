@@ -1,5 +1,8 @@
 package com.matthewnewkirk.kudos;
 
+import com.matthewnewkirk.kudos.db.TestH2Manager;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportResource;
@@ -9,6 +12,6 @@ import org.springframework.context.annotation.ImportResource;
 public class KudosApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(KudosApplication.class, args);
+      SpringApplication.run(KudosApplication.class, args);
     }
 }

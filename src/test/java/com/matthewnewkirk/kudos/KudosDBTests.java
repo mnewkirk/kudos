@@ -12,7 +12,7 @@ import com.matthewnewkirk.kudos.db.DatabaseAuditor;
 import com.matthewnewkirk.kudos.db.KudoService;
 import com.matthewnewkirk.kudos.db.KudoTextService;
 import com.matthewnewkirk.kudos.db.ReportingService;
-import com.matthewnewkirk.kudos.db.TestDatabaseCleaner;
+import com.matthewnewkirk.kudos.db.TestH2Manager;
 import com.matthewnewkirk.kudos.db.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +48,9 @@ public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests 
   @Autowired
   private DatabaseAuditor testDatabaseCleaner;
 
+  @Autowired
+  private TestH2Manager testH2Manager;
+
   User bob = new User(0, "bob", "bob@example.com");
   User sue = new User(0, "sue", "sue@example.com");
   User alice = new User(0, "alice", "alice@example.com");
@@ -55,6 +58,8 @@ public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests 
 
   @BeforeClass
   public void createThings() {
+    testH2Manager.deleteTestDatabases();
+    testH2Manager.createTestDatabases();
     Assert.assertTrue(userService.add(bob));
     userService.findOrAdd(sue);
     userService.findOrAdd(alice);

@@ -8,15 +8,19 @@
           th:href="@{/css/kudos.css}" rel="stylesheet" />
 </head>
 <body>
-<form th:fragment="searchTag" action="#" th:action="@{/search}" th:object="${kudoSearch}" method="post">
-    # Kudos Displayed <input class="small" type="text" th:field="*{limitNumberOfKudosDisplayed}" value="100"/>
+<form th:fragment="searchTag" action="#" th:action="@{/}" th:object="${searchKudoForm}" method="post">
+    # Kudos Displayed <input class="small" type="text" th:field="*{limitNumberOfKudosDisplayed}" th:value="${foundKudos.getSearchSize()}"/>
     <input type="submit" value="Limit" /> <input type="reset" value="Reset" />
+    <ul>
+        <li th:each="err : ${#fields.errors('*')}" th:text="${err}" />
+    </ul>
 </form>
-<form th:fragment="addKudo" action="#" th:action="@{/add}" th:object="${kudoToAdd}" method="post">
-    Who should receive the kudo? (e-mail address)<input type="text" th:field="*{userTo}"/>
-    Who is the kudo from? (e-mail address)<input type="text" th:field="*{userFrom}"/>
-    What did they do that was awesome?<input type="text" th:field="*{text}"/>
+<form th:fragment="addKudo" action="#" th:action="@{/add}" th:object="${addKudoForm}" method="post">
+    <input type="text" th:field="*{userFrom}"/> thanks <input type="text" th:field="*{userTo}"/> for <input type="text" th:field="*{text}"/>
     <input type="submit" value="Add Kudo"/> <input type="reset" value="Reset" />
+    <ul>
+        <li th:each="err : ${#fields.errors('*')}" th:text="${err}" />
+    </ul>
 </form>
 </body>
 </html>

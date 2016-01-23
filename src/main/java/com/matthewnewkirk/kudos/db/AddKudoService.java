@@ -5,7 +5,7 @@ import java.util.Date;
 import com.matthewnewkirk.kudos.containers.Kudo;
 import com.matthewnewkirk.kudos.containers.KudoText;
 import com.matthewnewkirk.kudos.containers.User;
-import com.matthewnewkirk.kudos.containers.search.KudoToAdd;
+import com.matthewnewkirk.kudos.forms.AddKudoForm;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,21 +29,21 @@ public class AddKudoService {
   
   private JdbcTemplate jdbcTemplate;
 
-  public Kudo addKudo(KudoToAdd kudoToAdd) {
+  public Kudo addKudo(AddKudoForm addKudoForm) {
     User userFrom = 
-      userService.findUserByEmail(kudoToAdd.getUserFrom());
+      userService.findUserByEmail(addKudoForm.getUserFrom());
     if (userFrom == null) {
-      userFrom = new User(0, kudoToAdd.getUserFrom(), kudoToAdd.getUserFrom());
+      userFrom = new User(0, addKudoForm.getUserFrom(), addKudoForm.getUserFrom());
       userService.add(userFrom);
     }
     User userTo =
-      userService.findUserByEmail(kudoToAdd.getUserTo());
+      userService.findUserByEmail(addKudoForm.getUserTo());
     if (userTo == null) {
-      userTo= new User(0, kudoToAdd.getUserTo(), kudoToAdd.getUserTo());
+      userTo= new User(0, addKudoForm.getUserTo(), addKudoForm.getUserTo());
       userService.add(userTo);
     }
 
-    KudoText kudoText = new KudoText(kudoToAdd.getText());
+    KudoText kudoText = new KudoText(addKudoForm.getText());
     kudoTextService.add(kudoText);
     Kudo kudo = new Kudo(0, kudoText.getTextId(), userFrom.getUserId(), userTo.getUserId(), new Date());
 

@@ -17,7 +17,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * @author mnewkirk
  *         created 10/14/2015
  */
-public class TestDatabaseCleaner extends DatabaseAuditor {
+public class TestDatabaseCleaner implements DatabaseAuditor {
   private static final Logger log = LoggerFactory.getLogger(TestDatabaseCleaner.class);
 
   private JdbcTemplate jdbcTemplate;
@@ -37,7 +37,7 @@ public class TestDatabaseCleaner extends DatabaseAuditor {
 
   @Override
   public void observeIdCreated(String table, String idKeyword, int id) {
-    super.observeIdCreated(table, idKeyword, id);
+    log.debug("Observing the addition of " + table + " : " + id);
     itemKeywords.put(table, idKeyword);
     if (itemsToBeDeleted.get(table) == null) {
       itemsToBeDeleted.put(table, new HashSet<>());

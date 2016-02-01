@@ -32,6 +32,8 @@ import org.testng.annotations.Test;
 @TestExecutionListeners(inheritListeners = false, listeners =
   {DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class})
 public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests {
+  @Autowired
+  private DatabaseAuditor testDatabaseCleaner;
 
   @Autowired
   private UserService userService;
@@ -44,9 +46,6 @@ public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests 
 
   @Autowired
   private ReportingService reportingService;
-
-  @Autowired
-  private DatabaseAuditor testDatabaseCleaner;
 
   @Autowired
   private TestH2Manager testH2Manager;

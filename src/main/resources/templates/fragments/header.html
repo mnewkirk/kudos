@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head th:fragment="headTag">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="username/html; charset=UTF-8"/>
     <title>Kudos!</title>
 
     <link href="../../css/kudos.css"
           th:href="@{/css/kudos.css}" rel="stylesheet" />
 </head>
 <body>
+<table style="float: right" th:fragment="headLinks">
+    <tr>
+        <td><a href="/register">Register</a></td>
+    </tr>
+</table>
 <form th:fragment="searchTag" action="#" th:action="@{/}" th:object="${searchKudoForm}" method="post">
-    # Kudos Displayed <input class="small" type="text" th:field="*{limitNumberOfKudosDisplayed}" th:value="${foundKudos.getSearchSize()}"/>
+    # Kudos Displayed <input class="small" type="username" th:field="*{limitNumberOfKudosDisplayed}" th:value="${foundKudos.getSearchSize()}"/>
     <input type="submit" value="Limit" /> <input type="reset" value="Reset" />
     <ul>
-        <li th:each="err : ${#fields.errors('*')}" th:text="${err}" />
+        <li th:each="err : ${#fields.errors('*')}" th:username="${err}" />
     </ul>
 </form>
 <form th:fragment="addKudo" action="#" th:action="@{/add}" th:object="${addKudoForm}" method="post">
-    <input type="text" th:field="*{userFrom}"/> thanks <input type="text" th:field="*{userTo}"/> for <input type="text" th:field="*{text}"/>
+    <input type="username" th:field="*{email}"/> thanks <input type="username" th:field="*{userTo}"/> for <input type="username" th:field="*{username}"/>
     <input type="submit" value="Add Kudo"/> <input type="reset" value="Reset" />
     <ul>
-        <li th:each="err : ${#fields.errors('*')}" th:text="${err}" />
+        <li th:each="err : ${#fields.errors('*')}" th:username="${err}" />
     </ul>
 </form>
 </body>

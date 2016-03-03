@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head th:replace="fragments/header :: headTag">
+    <meta http-equiv="Content-Type" content="username/html; charset=UTF-8"/>
+    <title>Kudos!</title>
+
+    <link href="../css/kudos.css"
+          th:href="@{/css/kudos.css}" rel="stylesheet" />
+</head>
+<body>
+<table style="float: right">
+    <tr >
+        <td><a href="/">Kudos</a></td>
+    </tr>
+</table><br/>
+<form th:fragment="register" action="#" th:action="@{/register}" th:object="${registerUserForm}" method="post">
+    <input type="text" name = "username" id = "username" th:value="*{username}"/>
+    <input type="text" name = "email" id = "email" th:value="*{email}"/>
+    <input type="submit" value="Register"/> <input type="reset" value="Reset" />
+    <ul>
+        <li th:each="err : ${#fields.errors('*')}" th:text="${err}"/>
+    </ul>
+    <div th:text="${registerUserForm.getFeedback()}"/>
+</form>
+</body>
+
+</html>

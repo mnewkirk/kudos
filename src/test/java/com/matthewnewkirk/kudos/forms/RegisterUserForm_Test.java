@@ -15,37 +15,52 @@ public class RegisterUserForm_Test {
   private Object[][] formData() {
     return new Object[][] {
       new Object[] {
-        new RegisterUserForm(RegisterUserForm.defaultUsername, RegisterUserForm.defaultEmail),
+        new RegisterUserForm(RegisterUserForm.defaultUsername, RegisterUserForm.defaultEmail, "foobar01", "foobar01"),
         new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
         2
       },
       new Object[] {
-        new RegisterUserForm("test_user", RegisterUserForm.defaultEmail),
+        new RegisterUserForm("test_user", RegisterUserForm.defaultEmail, "foobar01", "foobar01"),
         new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
         1
       },
       new Object[] {
-        new RegisterUserForm("test user", "sue@example.com"),
+        new RegisterUserForm("test user", "sue@example.com", "foobar01", "foobar01"),
         new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
         1
       },
       new Object[] {
-        new RegisterUserForm("te", "sue@example.com"),
+        new RegisterUserForm("te", "sue@example.com", "foobar01", "foobar01"),
         new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
         1
       },
       new Object[] {
-        new RegisterUserForm("test_username", "sue@example.com"),
+        new RegisterUserForm("test_username", "sue@example.com", "foobar01", "foobar01"),
         new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
         1
       },
       new Object[] {
-        new RegisterUserForm("test_user", "sue@example"),
+        new RegisterUserForm("test_user", "sue@example", "foobar01", "foobar01"),
         new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
         1
       },
       new Object[] {
-        new RegisterUserForm("test_user", "sue@example.com"),
+        new RegisterUserForm("test_user", "sue@example.com", "foobar01", "bar"),
+        new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
+        1
+      },
+      new Object[] {
+        new RegisterUserForm("test_user", "sue@example.com", "foobar0", "foobar0"),
+        new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
+        1
+      },
+      new Object[] {
+        new RegisterUserForm("test_user", "sue@example.com", "", ""),
+        new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
+        1
+      },
+      new Object[] {
+        new RegisterUserForm("test_user", "sue@example.com", "foobar01", "foobar01"),
         new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
         0
       },

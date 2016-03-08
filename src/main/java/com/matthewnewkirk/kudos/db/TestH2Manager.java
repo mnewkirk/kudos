@@ -45,6 +45,7 @@ public class TestH2Manager  {
       log.debug(error);
       return;
     }*/
+    deleteTestDatabases();
     log.info("Creating tables");
     jdbcTemplate.execute(UserService.createUserTableQuery());
     jdbcTemplate.execute(KudoTextService.createKudoTextTableQuery());

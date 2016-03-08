@@ -50,9 +50,9 @@ public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests 
   @Autowired
   private TestH2Manager testH2Manager;
 
-  User bob = new User(0, "bob", "bob@example.com");
-  User sue = new User(0, "sue", "sue@example.com");
-  User alice = new User(0, "alice", "alice@example.com");
+  User bob = new User(0, "bob", "bob@example.com", "test");
+  User sue = new User(0, "sue", "sue@example.com", "test");
+  User alice = new User(0, "alice", "alice@example.com", "test");
   KudoText kudoText = new KudoText("Awesome job building the kudo system!");
 
   @BeforeClass
@@ -76,7 +76,7 @@ public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests 
 
 	@Test ()
 	public void testUniqueEmail() {
-    User notAlice = new User(0, "notAlice", "alice@example.com");
+    User notAlice = new User(0, "notAlice", "alice@example.com", "test");
     Assert.assertFalse(userService.add(notAlice));
   }
 

@@ -12,20 +12,18 @@
 <body>
 <table style="float: right">
     <tr >
-        <td><a href="/login">Login</a></td>
+        <td><a href="/register">Register</a></td>
         <td><a href="/">Kudos</a></td>
     </tr>
 </table><br/>
-<form th:fragment="register" action="#" th:action="@{/register}" th:object="${registerUserForm}" method="post">
+<form th:fragment="login" action="#" th:action="@{/login}" th:object="${loginForm}" method="post">
     <input type="text" name = "username" id = "username" th:value="*{username}"/>
-    <input type="text" name = "email" id = "email" th:value="*{email}"/>
-    <input type="password" name = "rawPassword" id = "rawPassword" th:value="*{rawPassword}"/>
-    <input type="password" name = "confirmationPassword" id = "confirmationPassword" th:value="*{email}"/>
-    <input type="submit" value="Register"/> <input type="reset" value="Reset" />
+    <input type="text" name = "rawPassword" id = "rawPassword" th:value="*{rawPassword}"/>
+    <input type="submit" value="Login"/> <input type="reset" value="Reset" />
     <ul>
         <li th:each="err : ${#fields.errors('*')}" th:text="${err}"/>
     </ul>
-    <div th:text="${registerUserForm.getFeedback()}"/>
+    <div th:text="${loginForm.getFeedback()}"/>
 </form>
 </body>
 

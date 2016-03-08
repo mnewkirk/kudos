@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -23,6 +24,7 @@ public class UserService {
   public final static String USER_ID = "id";
   public final static String USER_NAME = "username";
   public final static String USER_EMAIL = "email";
+  public final static String USER_PASSWORD = "password";
   private final static Logger log = LoggerFactory.getLogger(UserService.class);
 
   private JdbcTemplate jdbcTemplate;
@@ -49,6 +51,7 @@ public class UserService {
     Map<String, Object> parameters = new HashMap<>();
     parameters.put(USER_NAME, user.getUsername());
     parameters.put(USER_EMAIL, user.getEmail());
+    parameters.put(USER_PASSWORD, user.getHashedPassword());
     Number id = simpleJdbcInsert.executeAndReturnKey(parameters);
     user.setUserId(id.intValue());
     databaseAuditor.observeIdCreated(USER_TABLE, USER_ID, id.intValue());
@@ -59,10 +62,11 @@ public class UserService {
     try {
       return jdbcTemplate.queryForObject(
         "select " + USER_ID + ", " + USER_NAME + ", " +
-          USER_EMAIL + "\n" +
+          USER_EMAIL + ", " + USER_PASSWORD + "\n" +
           " from " + USER_TABLE + "\n" +
           " where " + USER_EMAIL + " = ?", new Object[]{email}, (rs, rowNum) -> {
-            return new User(rs.getInt(USER_ID), rs.getString(USER_NAME), rs.getString(USER_EMAIL));
+            return new User(rs.getInt(USER_ID), rs.getString(USER_NAME),
+              rs.getString(USER_EMAIL), rs.getString(USER_PASSWORD));
           });
     }
     catch (EmptyResultDataAccessException ex) {
@@ -74,11 +78,33 @@ public class UserService {
     try {
       return jdbcTemplate.queryForObject(
         "select " + USER_ID + ", " + USER_NAME + ", " +
-          USER_EMAIL + "\n" +
+          USER_EMAIL + ", " + USER_PASSWORD + "\n" +
           " from " + USER_TABLE + "\n" +
           " where " + USER_ID + " = ?", new Object[]{id}, (rs, rowNum) -> {
-            return new User(rs.getInt(USER_ID), rs.getString(USER_NAME), rs.getString(USER_EMAIL));
+            return new User(rs.getInt(USER_ID), rs.getString(USER_NAME),
+              rs.getString(USER_EMAIL), rs.getString(USER_PASSWORD));
           });
+    }
+    catch (EmptyResultDataAccessException ex) {
+      return null;
+    }
+  }
+
+  public User findUserByUsernameAndPassword(String username, String rawPassword) {
+    try {
+      User foundUser = jdbcTemplate.queryForObject(
+        "select " + USER_ID + ", " + USER_NAME + ", " +
+          USER_EMAIL + ", " + USER_PASSWORD + "\n" +
+          " from " + USER_TABLE + "\n" +
+          " where " + USER_NAME + " = ?", new Object[]{username}, (rs, rowNum) -> {
+          return new User(rs.getInt(USER_ID), rs.getString(USER_NAME),
+            rs.getString(USER_EMAIL), rs.getString(USER_PASSWORD));
+        });
+      BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+      if (!passwordEncoder.matches(rawPassword, foundUser.getHashedPassword())) {
+        return null;
+      }
+      return foundUser;
     }
     catch (EmptyResultDataAccessException ex) {
       return null;
@@ -101,6 +127,7 @@ public class UserService {
       USER_ID  + " INT NOT NULL AUTO_INCREMENT,\n" +
       USER_NAME + " VARCHAR(100) NOT NULL,\n" +
       USER_EMAIL + " VARCHAR(100) NOT NULL,\n" +
+      USER_PASSWORD + " VARCHAR(100) NOT NULL,\n" +
       "PRIMARY KEY (" + USER_ID + "),\n" +
       "INDEX " + USER_NAME + " (" + USER_NAME + " ASC),\n" +
       "UNIQUE INDEX " + USER_EMAIL + " (" + USER_EMAIL + " ASC) );\n";

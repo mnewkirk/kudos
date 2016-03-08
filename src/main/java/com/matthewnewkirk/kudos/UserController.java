@@ -12,10 +12,12 @@ import com.matthewnewkirk.kudos.db.AddKudoService;
 import com.matthewnewkirk.kudos.db.ReportingService;
 import com.matthewnewkirk.kudos.db.UserService;
 import com.matthewnewkirk.kudos.forms.AddKudoForm;
+import com.matthewnewkirk.kudos.forms.LoginForm;
 import com.matthewnewkirk.kudos.forms.RegisterUserForm;
 import com.matthewnewkirk.kudos.forms.SearchKudoForm;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,8 +43,10 @@ public class UserController {
   {
     registerUserForm.validate(bindingResult);
     if (!bindingResult.hasErrors()) {
+      BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+      String hashedPassword = passwordEncoder.encode(registerUserForm.getRawPassword());
       User newUser = new User(
-        0, registerUserForm.getUsername(), registerUserForm.getEmail());
+        0, registerUserForm.getUsername(), registerUserForm.getEmail(), hashedPassword);
       if (userService.findUserByEmail(registerUserForm.getEmail()) != null) {
         bindingResult.addError(
           new FieldError(
@@ -66,5 +70,37 @@ public class UserController {
       model.addAttribute(registerUserForm);
     }
     return "register";
+  }
+
+  @RequestMapping(method = RequestMethod.POST, value = "/login")
+  public String login(Model model,
+                      @ModelAttribute @Valid LoginForm loginForm,
+                      BindingResult bindingResult)
+  {
+    String pageToReturn = "login";
+    loginForm.validate(bindingResult);
+    if (!bindingResult.hasErrors()) {
+      User foundUser =
+        userService.findUserByUsernameAndPassword(loginForm.getUsername(),
+          loginForm.getRawPassword());
+      if (foundUser == null) {
+        loginForm.setFeedback("No user could be found with that username and password.");
+      }
+      else {
+        loginForm.setFeedback("User " + foundUser.getUsername() + " logged in.");
+      }
+    }
+    model.addAttribute(loginForm);
+    return pageToReturn;
+  }
+
+  @RequestMapping(method = RequestMethod.GET, value = "/login")
+  public String landAtLogin(Model model,
+                               @ModelAttribute @Valid LoginForm loginForm)
+  {
+    if (!model.containsAttribute("loginForm")) {
+      model.addAttribute(loginForm);
+    }
+    return "login";
   }
 }

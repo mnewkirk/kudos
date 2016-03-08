@@ -7,11 +7,13 @@ public class User {
   private int userId;
   private String username;
   private String email;
+  private String hashedPassword;
 
-  public User(int userId, String username, String email) {
+  public User(int userId, String username, String email, String hashedPassword) {
     this.userId = userId;
     this.username = username;
     this.email = email;
+    this.hashedPassword = hashedPassword;
   }
 
   public int getUserId() {
@@ -28,6 +30,14 @@ public class User {
 
   public void setUserId(int userId) {
     this.userId = userId;
+  }
+
+  public String getHashedPassword() {
+    return hashedPassword;
+  }
+
+  public void setHashedPassword(String hashedPassword) {
+    this.hashedPassword = hashedPassword;
   }
 
   @Override

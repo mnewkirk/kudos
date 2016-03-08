@@ -19,6 +19,7 @@ public class AddKudoForm {
   String userFrom;
   @NotEmpty(message = "Recipient must not be empty.")
   String userTo;
+  String feedback;
 
   public AddKudoForm(String kudoText, String userFrom, String userTo) {
     this.text = kudoText;
@@ -54,6 +55,14 @@ public class AddKudoForm {
 
   public void setUserTo(String userTo) {
     this.userTo = userTo;
+  }
+
+  public String getFeedback() {
+    return feedback;
+  }
+
+  public void setFeedback(String feedback) {
+    this.feedback = feedback;
   }
 
   public void validate(BindingResult bindingResult) {

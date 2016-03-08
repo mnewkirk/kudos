@@ -33,14 +33,15 @@ public class AddKudoService {
     User userFrom = 
       userService.findUserByEmail(addKudoForm.getUserFrom());
     if (userFrom == null) {
-      userFrom = new User(0, addKudoForm.getUserFrom(), addKudoForm.getUserFrom());
-      userService.add(userFrom);
+      addKudoForm.setFeedback(
+        addKudoForm.getFeedback() + " " +
+          addKudoForm.getUserFrom() + " does not exist.");
     }
     User userTo =
       userService.findUserByEmail(addKudoForm.getUserTo());
     if (userTo == null) {
-      userTo= new User(0, addKudoForm.getUserTo(), addKudoForm.getUserTo());
-      userService.add(userTo);
+      addKudoForm.setFeedback(addKudoForm.getFeedback() + " " +
+          addKudoForm.getUserTo() + " does not exist.");
     }
 
     KudoText kudoText = new KudoText(addKudoForm.getText());

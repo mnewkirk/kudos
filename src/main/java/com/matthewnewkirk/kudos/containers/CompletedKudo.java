@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * @author Matt Newkirk 11/7/2015
  */
-public class CompletedKudo {
+public class  CompletedKudo {
   private int kudoId;
   private KudoText text;
   private User userFrom;

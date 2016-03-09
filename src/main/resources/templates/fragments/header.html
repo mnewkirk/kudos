@@ -15,18 +15,9 @@
     </tr>
 </table>
 <form th:fragment="searchTag" action="#" th:action="@{/}" th:object="${searchKudoForm}" method="post">
-    # Kudos Displayed <input class="small" type="username" th:field="*{limitNumberOfKudosDisplayed}" th:value="${foundKudos.getSearchSize()}"/>
+    # Kudos Displayed
+    <input class="small" type="text" id="limitNumberOfKudosDisplayed" name="limitNumberOfKudosDisplayed" th:value="${searchKudoForm.limitNumberOfKudosDisplayed}"/>
     <input type="submit" value="Limit" /> <input type="reset" value="Reset" />
-    <ul>
-        <li th:each="err : ${#fields.errors('*')}" th:username="${err}" />
-    </ul>
-</form>
-<form th:fragment="addKudo" action="#" th:action="@{/add}" th:object="${addKudoForm}" method="post">
-    <input type="username" th:field="*{email}"/> thanks <input type="username" th:field="*{userTo}"/> for <input type="username" th:field="*{username}"/>
-    <input type="submit" value="Add Kudo"/> <input type="reset" value="Reset" />
-    <ul>
-        <li th:each="err : ${#fields.errors('*')}" th:username="${err}" />
-    </ul>
 </form>
 </body>
 </html>

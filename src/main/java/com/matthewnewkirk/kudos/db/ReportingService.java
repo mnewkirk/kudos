@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.sql.DataSource;
+
 import com.matthewnewkirk.kudos.containers.CompletedKudo;
 import com.matthewnewkirk.kudos.containers.Kudo;
 import com.matthewnewkirk.kudos.containers.KudoText;
@@ -14,6 +16,8 @@ import com.matthewnewkirk.kudos.util.DBUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * @author Matt Newkirk 11/7/2015
@@ -21,8 +25,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ReportingService {
   private final static Logger log = LoggerFactory.getLogger(ReportingService.class);
 
+  private JdbcTemplate jdbcTemplate;
+
   @Autowired
-  DatabaseAuditor databaseAuditor;
+  public void setDataSource(DataSource dataSource) {
+    this.jdbcTemplate = new JdbcTemplate(dataSource);
+  }
 
   @Autowired
   KudoTextService kudoTextService;
@@ -49,8 +57,8 @@ public class ReportingService {
 
   public List<CompletedKudo> findKudosSinceTime(Date date) {
     List<Kudo> kudos =
-      kudoService.findKudosGiven(KudoService.KUDO_TIME, ">=",
-        String.valueOf(DBUtil.formatDateAndTimeToString(date)));
+      kudoService.findKudosGiven(
+        KudoService.KUDO_TIME, ">=", String.valueOf(DBUtil.formatDateAndTimeToString(date)));
     return completedKudosFromKudos(kudos);
   }
 
@@ -74,10 +82,25 @@ public class ReportingService {
     }
     return completedKudos;
   }
-  private List<User> findAllToUsersForSameKudoText(int kudoTextId) {
-    List<Integer> userIds = kudoService.findAllToUsersForSameKudoText(kudoTextId);
-    return userIds.stream()
-      .map(userService::findUserById)
-      .collect(Collectors.toList());
+
+  public List<User> findAllToUsersForSameKudoText(int kudoTextId) {
+    try {
+      return jdbcTemplate.query(
+        "select " + UserService.USER_TABLE + "." +
+          UserService.USER_ID + ", " + UserService.USER_NAME + ", " +
+          UserService.USER_EMAIL + "\n" +
+          " from " + UserService.USER_TABLE + "\n" +
+          " LEFT JOIN " + KudoService.KUDO_TABLE + "\n" +
+          " on " + KudoService.KUDO_USER_TO_ID + " = " +
+          UserService.USER_TABLE + "." + UserService.USER_ID + "\n" +
+          " where " + KudoService.KUDO_TEXT_ID + " = ?", new Object[]{kudoTextId},
+        (rs, rowNum) -> {
+          return new User(rs.getInt(UserService.USER_ID), rs.getString(UserService.USER_NAME),
+            rs.getString(UserService.USER_EMAIL), UserService.UNNECESSARY);
+        });
+    }
+    catch (EmptyResultDataAccessException ex) {
+      return new ArrayList<>();
+    }
   }
 }

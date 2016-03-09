@@ -30,19 +30,8 @@ public class AddKudoService {
   private JdbcTemplate jdbcTemplate;
 
   public Kudo addKudo(AddKudoForm addKudoForm) {
-    User userFrom = 
-      userService.findUserByEmail(addKudoForm.getUserFrom());
-    if (userFrom == null) {
-      addKudoForm.setFeedback(
-        addKudoForm.getFeedback() + " " +
-          addKudoForm.getUserFrom() + " does not exist.");
-    }
-    User userTo =
-      userService.findUserByEmail(addKudoForm.getUserTo());
-    if (userTo == null) {
-      addKudoForm.setFeedback(addKudoForm.getFeedback() + " " +
-          addKudoForm.getUserTo() + " does not exist.");
-    }
+    User userFrom = userService.findUserByUsername(addKudoForm.getUserFrom());
+    User userTo = userService.findUserByUsername(addKudoForm.getUserTo());
 
     KudoText kudoText = new KudoText(addKudoForm.getText());
     kudoTextService.add(kudoText);

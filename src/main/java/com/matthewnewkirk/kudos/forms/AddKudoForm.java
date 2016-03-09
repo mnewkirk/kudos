@@ -1,6 +1,11 @@
 package com.matthewnewkirk.kudos.forms;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.constraints.Pattern;
+
+import com.matthewnewkirk.kudos.containers.User;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.validation.BindingResult;
@@ -11,26 +16,23 @@ import org.springframework.validation.FieldError;
  */
 public class AddKudoForm {
   public static final String defaultText = "<Something you're happy about!>";
-  public static final String defaultUserFrom = "<Your name>";
-  public static final String defaultUserTo = "<The recipient's name>";
-  @NotEmpty(message = "Kudo username may not be empty.")
   String text;
-  @NotEmpty(message = "Sender must not be empty.")
   String userFrom;
-  @NotEmpty(message = "Recipient must not be empty.")
   String userTo;
   String feedback;
+  List<User> availableUsers;
+  long userVersion = -1L;
 
   public AddKudoForm(String kudoText, String userFrom, String userTo) {
     this.text = kudoText;
     this.userFrom = userFrom;
     this.userTo = userTo;
+    availableUsers = new ArrayList<>();
   }
 
   public AddKudoForm() {
     text = defaultText;
-    userFrom = defaultUserFrom;
-    userTo = defaultUserTo;
+    availableUsers = new ArrayList<>();
   }
 
   public String getText() {
@@ -65,15 +67,31 @@ public class AddKudoForm {
     this.feedback = feedback;
   }
 
+  public List<User> getAvailableUsers() {
+    return availableUsers;
+  }
+
+  public void setAvailableUsers(List<User> availableUsers) {
+    this.availableUsers = availableUsers;
+  }
+
+  public long getUserVersion() {
+    return userVersion;
+  }
+
+  public void setUserVersion(long userVersion) {
+    this.userVersion = userVersion;
+  }
+
   public void validate(BindingResult bindingResult) {
     if (text.equals(defaultText)) {
-      bindingResult.addError(new FieldError("KudoForm", "username", "Kudo username must be different than the example!"));
+      bindingResult.addError(new FieldError("KudoForm", "text",
+          "Kudo text must be different than the example!"));
     }
-    if (userFrom.equals(defaultUserFrom)) {
-      bindingResult.addError(new FieldError("KudoForm", "email", "You must supply your name in the 'from' field."));
+    if (text.isEmpty()) {
+      bindingResult.addError(new FieldError("KudoForm", "text",
+          "Kudo text must not be empty!"));
     }
-    if (userTo.equals(defaultUserTo)) {
-      bindingResult.addError(new FieldError("KudoForm", "userTo", "You must supply the recipient's name in the 'to' field."));
-    }
+
   }
 }

@@ -1,6 +1,8 @@
 package com.matthewnewkirk.kudos.db;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -25,7 +27,9 @@ public class UserService {
   public final static String USER_NAME = "username";
   public final static String USER_EMAIL = "email";
   public final static String USER_PASSWORD = "password";
+  public final static String UNNECESSARY = "unnecessary";
   private final static Logger log = LoggerFactory.getLogger(UserService.class);
+  private long userVersion = 0L;
 
   private JdbcTemplate jdbcTemplate;
 
@@ -41,9 +45,10 @@ public class UserService {
   @Transactional
   public boolean add(User user) {
     log.debug("Adding " + user.getUsername() + ", " + user.getEmail());
-    if (findUserByEmail(user.getEmail()) != null) {
+    if (findUserByUsername(user.getUsername()) != null) {
       return false;
     }
+    userVersion++;
     SimpleJdbcInsert simpleJdbcInsert =
       new SimpleJdbcInsert(jdbcTemplate)
         .withTableName(USER_TABLE)
@@ -58,15 +63,15 @@ public class UserService {
     return true;
   }
 
-  public User findUserByEmail(String email) {
+  public User findUserByUsername(String username) {
     try {
       return jdbcTemplate.queryForObject(
         "select " + USER_ID + ", " + USER_NAME + ", " +
-          USER_EMAIL + ", " + USER_PASSWORD + "\n" +
+          USER_EMAIL + "\n" +
           " from " + USER_TABLE + "\n" +
-          " where " + USER_EMAIL + " = ?", new Object[]{email}, (rs, rowNum) -> {
+          " where " + USER_NAME + " = ?", new Object[]{username}, (rs, rowNum) -> {
             return new User(rs.getInt(USER_ID), rs.getString(USER_NAME),
-              rs.getString(USER_EMAIL), rs.getString(USER_PASSWORD));
+              rs.getString(USER_EMAIL), UNNECESSARY);
           });
     }
     catch (EmptyResultDataAccessException ex) {
@@ -78,11 +83,11 @@ public class UserService {
     try {
       return jdbcTemplate.queryForObject(
         "select " + USER_ID + ", " + USER_NAME + ", " +
-          USER_EMAIL + ", " + USER_PASSWORD + "\n" +
+          USER_EMAIL + "\n" +
           " from " + USER_TABLE + "\n" +
           " where " + USER_ID + " = ?", new Object[]{id}, (rs, rowNum) -> {
             return new User(rs.getInt(USER_ID), rs.getString(USER_NAME),
-              rs.getString(USER_EMAIL), rs.getString(USER_PASSWORD));
+              rs.getString(USER_EMAIL), UNNECESSARY);
           });
     }
     catch (EmptyResultDataAccessException ex) {
@@ -112,13 +117,32 @@ public class UserService {
   }
 
   public User findOrAdd(User user) {
-    User newUser = findUserByEmail(user.getEmail());
+    User newUser = findUserByUsername(user.getUsername());
     if (newUser == null) {
         add(user);
       newUser = user;
     }
     return newUser;
+  }
 
+  public List<User> findAllUsers() {
+    try {
+      String query = "select " + USER_ID + ", " + USER_NAME + ", " +
+        USER_EMAIL + "\n" +
+        " from " + USER_TABLE + "\n";
+      return jdbcTemplate.query(query,
+        (rs, rowNum) -> {
+          return new User(rs.getInt(USER_ID), rs.getString(USER_NAME),
+            rs.getString(USER_EMAIL), UNNECESSARY);
+        });
+    }
+    catch (EmptyResultDataAccessException ex) {
+      return new ArrayList<>();
+    }
+  }
+
+  public long getUserVersion() {
+    return userVersion;
   }
 
   public static String createUserTableQuery() {
@@ -132,5 +156,7 @@ public class UserService {
       "INDEX " + USER_NAME + " (" + USER_NAME + " ASC),\n" +
       "UNIQUE INDEX " + USER_EMAIL + " (" + USER_EMAIL + " ASC) );\n";
   }
+
+
 }
 

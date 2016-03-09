@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import com.matthewnewkirk.kudos.containers.Kudo;
+import com.matthewnewkirk.kudos.containers.User;
 import com.matthewnewkirk.kudos.util.DBUtil;
 
 import org.slf4j.Logger;
@@ -57,20 +58,6 @@ public class KudoService {
     databaseAuditor.observeIdCreated(KUDO_TABLE, KUDO_ID, id.intValue());
   }
 
-  public List<Integer> findAllToUsersForSameKudoText(int kudoTextId) {
-    try {
-      return jdbcTemplate.query(
-        "select " + KUDO_USER_TO_ID + "\n" +
-          " from " + KUDO_TABLE + "\n" +
-          " where " + KUDO_TEXT_ID + " = ?", new Object[]{kudoTextId},
-        (rs, rowNum) -> {
-            return rs.getInt(KUDO_USER_TO_ID);
-          });
-    }
-    catch (EmptyResultDataAccessException ex) {
-      return new ArrayList<>();
-    }
-  }
 
   public List<Kudo> findLastNKudos(int numberOfKudosLimit) {
     try {

@@ -12,18 +12,19 @@
 <body>
 <tr th:replace="fragments/header :: headLinks" />
 <br/>
-<form th:replace="fragments/header :: addKudo" />
-<form th:replace="fragments/header :: searchTag"/>
+<form th:replace="fragments/addKudo :: addKudo" />
+<!-- Disabling this due to some strangeness with binding for now.
+<form th:replace="fragments/header :: searchTag"/-->
 <form>
     <div th:if="${foundKudos.foundKudos.size() > 0}">
         <div th:each="kudo : ${foundKudos.foundKudos}">
-            <span th:username="${kudo.getUserFrom().getUsername()}">Bob</span>
+            <span th:text="${kudo.getUserFrom().getUsername()}">Bob</span>
             <span> thanked </span>
             <span th:each="kudoTo : ${kudo.getUsersTo()}">
-                <span th:username="${kudoTo.getUsername()}">Sue</span>
+                <span th:text="${kudoTo.getUsername()}">Sue</span>
             </span>
             <span> for </span>
-            <span th:username="${kudo.getText()}">Being Awesome!</span>
+            <span th:text="${kudo.getText()}">Being Awesome!</span>
         </div>
     </div>
     <div th:if="${foundKudos.foundKudos.size() == 0}">

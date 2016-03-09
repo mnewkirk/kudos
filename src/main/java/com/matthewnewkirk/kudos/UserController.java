@@ -1,20 +1,11 @@
 package com.matthewnewkirk.kudos;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.validation.Valid;
 
-import com.matthewnewkirk.kudos.containers.CompletedKudo;
-import com.matthewnewkirk.kudos.containers.FoundKudos;
 import com.matthewnewkirk.kudos.containers.User;
-import com.matthewnewkirk.kudos.db.AddKudoService;
-import com.matthewnewkirk.kudos.db.ReportingService;
 import com.matthewnewkirk.kudos.db.UserService;
-import com.matthewnewkirk.kudos.forms.AddKudoForm;
 import com.matthewnewkirk.kudos.forms.LoginForm;
 import com.matthewnewkirk.kudos.forms.RegisterUserForm;
-import com.matthewnewkirk.kudos.forms.SearchKudoForm;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,8 +16,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * @author Matt Newkirk 11/21/2015
@@ -47,10 +36,10 @@ public class UserController {
       String hashedPassword = passwordEncoder.encode(registerUserForm.getRawPassword());
       User newUser = new User(
         0, registerUserForm.getUsername(), registerUserForm.getEmail(), hashedPassword);
-      if (userService.findUserByEmail(registerUserForm.getEmail()) != null) {
+      if (userService.findUserByUsername(registerUserForm.getUsername()) != null) {
         bindingResult.addError(
           new FieldError(
-            "registerUserForm", "email", "A user already exists with this e-mail address."));
+            "registerUserForm", "username", "A user already exists with this username."));
       }
       else {
         userService.add(newUser);

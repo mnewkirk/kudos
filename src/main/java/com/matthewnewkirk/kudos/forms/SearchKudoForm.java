@@ -11,6 +11,10 @@ public class SearchKudoForm {
   @Pattern(regexp = "[1-9]+[0-9]*", message = "Minimum number of kudos is 1.")
   private String limitNumberOfKudosDisplayed;
 
+
+  public SearchKudoForm() {
+    limitNumberOfKudosDisplayed = String.valueOf(defaultNumberKudos);
+  }
   public String getLimitNumberOfKudosDisplayed() {
     return limitNumberOfKudosDisplayed;
   }
@@ -23,7 +27,4 @@ public class SearchKudoForm {
     this.limitNumberOfKudosDisplayed = limitNumberOfKudosDisplayed;
   }
 
-  public SearchKudoForm() {
-    limitNumberOfKudosDisplayed = String.valueOf(defaultNumberKudos);
-  }
 }

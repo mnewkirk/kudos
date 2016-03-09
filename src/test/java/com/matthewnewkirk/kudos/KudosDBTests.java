@@ -75,8 +75,8 @@ public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests 
   }
 
 	@Test ()
-	public void testUniqueEmail() {
-    User notAlice = new User(0, "notAlice", "alice@example.com", "test");
+	public void testUniqueUsername() {
+    User notAlice = new User(0, "alice", "notAlice@example.com", "test");
     Assert.assertFalse(userService.add(notAlice));
   }
 
@@ -134,12 +134,12 @@ public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests 
   }
   @Test
   public void cantFindKudos() {
-    Assert.assertTrue(kudoService.findAllToUsersForSameKudoText(-1).isEmpty());
+    Assert.assertTrue(reportingService.findAllToUsersForSameKudoText(-1).isEmpty());
     Assert.assertTrue(kudoService.findKudosGiven(KudoService.KUDO_TIME, "<", "0000-01-01 00:00:00").isEmpty());
   }
   @Test
   public void cantFindUser() {
-    Assert.assertNull(userService.findUserByEmail(""));
+    Assert.assertNull(userService.findUserByUsername(""));
     Assert.assertNull(userService.findUserById(-1));
   }
   @AfterClass

@@ -2,6 +2,8 @@ package com.matthewnewkirk.kudos.forms;
 
 import java.util.List;
 
+import com.matthewnewkirk.kudos.containers.User;
+
 import org.springframework.validation.AbstractBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DirectFieldBindingResult;
@@ -19,19 +21,8 @@ public class AddKudoForm_Test {
   private Object[][] formData() {
     return new Object[][] {
       new Object[] {
-        new AddKudoForm(AddKudoForm.defaultText, AddKudoForm.defaultUserFrom,
-          AddKudoForm.defaultUserTo),
-        new DirectFieldBindingResult(new AddKudoForm(), "AddKudoForm"),
-        3
-      },
-      new Object[] {
-        new AddKudoForm("kudo for testing", AddKudoForm.defaultUserFrom,
-          AddKudoForm.defaultUserTo),
-        new DirectFieldBindingResult(new AddKudoForm(), "AddKudoForm"),
-        2
-      },
-      new Object[] {
-        new AddKudoForm("kudo for testing", "sue@example.com", AddKudoForm.defaultUserTo),
+        new AddKudoForm(AddKudoForm.defaultText, "userFrom",
+          "userTo"),
         new DirectFieldBindingResult(new AddKudoForm(), "AddKudoForm"),
         1
       },

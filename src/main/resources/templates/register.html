@@ -17,11 +17,14 @@
     </tr>
 </table><br/>
 <form th:fragment="register" action="#" th:action="@{/register}" th:object="${registerUserForm}" method="post">
-    <input type="text" name = "username" id = "username" th:value="*{username}"/>
-    <input type="text" name = "email" id = "email" th:value="*{email}"/>
-    <input type="password" name = "password" id = "password" th:value="*{password}"/>
-    <input type="password" name = "confirmationPassword" id = "confirmationPassword" th:value="*{email}"/>
-    <input type="submit" value="Register"/> <input type="reset" value="Reset" />
+    <h2>To register for kudos, please supply the following information:</h2>
+    <table>
+        <tr><td>Username: </td><td><input type="text" name = "username" id = "username" th:value="*{username}"/></td></tr>
+        <tr><td>E-mail address: </td><td><input type="text" name = "email" id = "email" th:value="*{email}"/></td></tr>
+        <tr><td>Password: </td><td><input type="password" name = "password" id = "password" th:value="*{password}"/></td></tr>
+        <tr><td>Password (confirm):</td><td><input type="password" name = "confirmationPassword" id = "confirmationPassword" th:value="*{email}"/></td></tr>
+        <tr><td><input type="submit" value="Register"/> <input type="reset" value="Reset" /></td></tr>
+    </table>
     <ul>
         <li th:each="err : ${#fields.errors('*')}" th:text="${err}"/>
     </ul>

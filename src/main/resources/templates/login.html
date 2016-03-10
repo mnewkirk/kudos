@@ -17,9 +17,11 @@
 
 <form th:fragment="login" th:unless="${#httpServletRequest.remoteUser != null}"
       action="#" th:action="@{/login}" th:object="${loginForm}" method="post">
-    <input type="text" name = "username" id = "username" th:value="*{username}"/>
-    <input type="password" name = "password" id = "password" th:value="*{password}"/>
-    <input type="submit" value="Login"/> <input type="reset" value="Reset" />
+    <table>
+        <tr><td>Username:</td><td><input type="text" name = "username" id = "username" th:value="*{username}"/></td></tr>
+        <tr><td>Password:</td><td><input type="password" name = "password" id = "password" th:value="*{password}"/></td></tr>
+        <tr><td colspan="2" align="center"><input type="submit" value="Login"/> <input type="reset" value="Reset" /></td></tr>
+    </table>
     <ul>
         <li th:each="err : ${#fields.errors('*')}" th:text="${err}"/>
     </ul>

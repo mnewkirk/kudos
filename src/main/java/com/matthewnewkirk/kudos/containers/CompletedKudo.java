@@ -9,15 +9,15 @@ import java.util.List;
 public class  CompletedKudo {
   private int kudoId;
   private KudoText text;
-  private User userFrom;
-  private List<User> usersTo;
+  private KudoUser kudoUserFrom;
+  private List<KudoUser> kudoUsersTo;
   private Date date;
 
-  public CompletedKudo(int kudoId, KudoText text, User userFrom, List<User> usersTo, Date date) {
+  public CompletedKudo(int kudoId, KudoText text, KudoUser kudoUserFrom, List<KudoUser> kudoUsersTo, Date date) {
     this.kudoId = kudoId;
     this.text = text;
-    this.userFrom = userFrom;
-    this.usersTo = usersTo;
+    this.kudoUserFrom = kudoUserFrom;
+    this.kudoUsersTo = kudoUsersTo;
     this.date = date;
   }
 
@@ -25,11 +25,11 @@ public class  CompletedKudo {
     return text;
   }
 
-  public User getUserFrom() {
-    return userFrom;
+  public KudoUser getKudoUserFrom() {
+    return kudoUserFrom;
   }
 
-  public List<User> getUsersTo() {
-    return usersTo;
+  public List<KudoUser> getKudoUsersTo() {
+    return kudoUsersTo;
   }
 }

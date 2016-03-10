@@ -10,7 +10,7 @@
           th:href="@{/css/kudos.css}" rel="stylesheet" />
 </head>
 <body>
-<tr th:replace="fragments/header :: headLinks" />
+<table th:replace="fragments/header :: headLinks" />
 <br/>
 <form th:replace="fragments/addKudo :: addKudo" />
 <!-- Disabling this due to some strangeness with binding for now.
@@ -18,9 +18,9 @@
 <form>
     <div th:if="${foundKudos.foundKudos.size() > 0}">
         <div th:each="kudo : ${foundKudos.foundKudos}">
-            <span th:text="${kudo.getUserFrom().getUsername()}">Bob</span>
+            <span th:text="${kudo.getKudoUserFrom().getUsername()}">Bob</span>
             <span> thanked </span>
-            <span th:each="kudoTo : ${kudo.getUsersTo()}">
+            <span th:each="kudoTo : ${kudo.getKudoUsersTo()}">
                 <span th:text="${kudoTo.getUsername()}">Sue</span>
             </span>
             <span> for </span>

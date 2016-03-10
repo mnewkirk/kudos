@@ -16,7 +16,7 @@ public class UpdateUtil {
     if (addKudoForm.getUserVersion() == userService.getUserVersion()) {
       return;
     }
-    addKudoForm.setAvailableUsers(userService.findAllUsers());
+    addKudoForm.setAvailableKudoUsers(userService.findAllUsers());
     addKudoForm.setUserVersion(userService.getUserVersion());
   }
 }

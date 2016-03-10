@@ -19,7 +19,7 @@
 <form th:fragment="register" action="#" th:action="@{/register}" th:object="${registerUserForm}" method="post">
     <input type="text" name = "username" id = "username" th:value="*{username}"/>
     <input type="text" name = "email" id = "email" th:value="*{email}"/>
-    <input type="password" name = "rawPassword" id = "rawPassword" th:value="*{rawPassword}"/>
+    <input type="password" name = "password" id = "password" th:value="*{password}"/>
     <input type="password" name = "confirmationPassword" id = "confirmationPassword" th:value="*{email}"/>
     <input type="submit" value="Register"/> <input type="reset" value="Reset" />
     <ul>

@@ -4,13 +4,13 @@
 
 <form th:fragment="addKudo" action="#" th:action="@{/add}" th:object="${addKudoForm}" method="post">
     <select th:field="${addKudoForm.userFrom}">
-        <option th:each="user : ${addKudoForm.availableUsers}"
+        <option th:each="user : ${addKudoForm.availableKudoUsers}"
                 th:value="${user.username}"
                 th:text="${user.username}">Username[wireframe]</option>
     </select>
     thanks
     <select th:field="${addKudoForm.userTo}">
-        <option th:each="user : ${addKudoForm.availableUsers}"
+        <option th:each="user : ${addKudoForm.availableKudoUsers}"
                 th:value="${user.username}"
                 th:text="${user.username}">Username[wireframe]</option>
     </select>

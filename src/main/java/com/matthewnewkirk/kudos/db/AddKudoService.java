@@ -4,7 +4,7 @@ import java.util.Date;
 
 import com.matthewnewkirk.kudos.containers.Kudo;
 import com.matthewnewkirk.kudos.containers.KudoText;
-import com.matthewnewkirk.kudos.containers.User;
+import com.matthewnewkirk.kudos.containers.KudoUser;
 import com.matthewnewkirk.kudos.forms.AddKudoForm;
 
 import org.slf4j.Logger;
@@ -30,12 +30,12 @@ public class AddKudoService {
   private JdbcTemplate jdbcTemplate;
 
   public Kudo addKudo(AddKudoForm addKudoForm) {
-    User userFrom = userService.findUserByUsername(addKudoForm.getUserFrom());
-    User userTo = userService.findUserByUsername(addKudoForm.getUserTo());
+    KudoUser kudoUserFrom = userService.findUserByUsername(addKudoForm.getUserFrom());
+    KudoUser kudoUserTo = userService.findUserByUsername(addKudoForm.getUserTo());
 
     KudoText kudoText = new KudoText(addKudoForm.getText());
     kudoTextService.add(kudoText);
-    Kudo kudo = new Kudo(0, kudoText.getTextId(), userFrom.getUserId(), userTo.getUserId(), new Date());
+    Kudo kudo = new Kudo(0, kudoText.getTextId(), kudoUserFrom.getUserId(), kudoUserTo.getUserId(), new Date());
 
     kudoService.add(kudo);
     return kudo;

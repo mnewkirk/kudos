@@ -12,25 +12,31 @@
 <body>
 <table th:replace="fragments/header :: headLinks" />
 <br/>
-<form th:replace="fragments/addKudo :: addKudo" />
+<div th:unless="${#httpServletRequest.remoteUser != null}">
+    <a href="/login">Login</a> to submit kudos!</div>
+<div th:if="${#httpServletRequest.remoteUser != null}">
+    <form th:replace="fragments/addKudo :: addKudo" />
+</div>
 <!-- Disabling this due to some strangeness with binding for now.
 <form th:replace="fragments/header :: searchTag"/-->
-<form>
-    <div th:if="${foundKudos.foundKudos.size() > 0}">
-        <div th:each="kudo : ${foundKudos.foundKudos}">
-            <span th:text="${kudo.getKudoUserFrom().getUsername()}">Bob</span>
-            <span> thanked </span>
-            <span th:each="kudoTo : ${kudo.getKudoUsersTo()}">
-                <span th:text="${kudoTo.getUsername()}">Sue</span>
-            </span>
-            <span> for </span>
-            <span th:text="${kudo.getText()}">Being Awesome!</span>
-        </div>
+<h1>Kudos!</h1>
+<div th:if="${foundKudos.foundKudos.size() > 0}">
+    <div th:each="kudo : ${foundKudos.foundKudos}">
+        <span th:text="${kudo.getKudoUserFrom().getUsername()}">Bob</span>
+        <span> thanked </span>
+        <span th:each="kudoTo : ${kudo.getKudoUsersTo()}">
+            <span th:text="${kudoTo.getUsername()}">Sue</span>
+        </span>
+        <span> for </span>
+        <span th:text="${kudo.getText()}">Being Awesome!</span>
+        <span> at </span>
+        <span th:text="${#dates.format(kudo.getDate(), 'MM-dd-yyyy HH:mm')}">01-01-1999 12:00</span>
     </div>
-    <div th:if="${foundKudos.foundKudos.size() == 0}">
-        <span>No kudos found.</span>
-    </div>
-</form>
+</div>
+<div th:if="${foundKudos.foundKudos.size() == 0}">
+    <span>No kudos found.</span>
+</div>
+
 </body>
 
 </html>

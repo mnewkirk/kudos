@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * This is taken from ixl.sql.util.DBUtils, but we want to decouple these projects.
  * @author mnewkirk
  *         created 7/30/2015
  */

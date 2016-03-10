@@ -3,6 +3,8 @@ package com.matthewnewkirk.kudos.containers;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 /**
  * @author Matt Newkirk 11/7/2015
  */
@@ -31,5 +33,9 @@ public class  CompletedKudo {
 
   public List<KudoUser> getKudoUsersTo() {
     return kudoUsersTo;
+  }
+
+  public Date getDate() {
+    return date;
   }
 }

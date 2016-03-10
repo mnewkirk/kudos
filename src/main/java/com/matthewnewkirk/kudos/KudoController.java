@@ -59,7 +59,7 @@ public class KudoController {
       refreshKudos(model, searchKudoForm);
     }
     model.addAttribute("searchKudoForm", searchKudoForm);
-    return "list";
+    return "home";
   }
 
   @RequestMapping(method = RequestMethod.POST, value = "/add")

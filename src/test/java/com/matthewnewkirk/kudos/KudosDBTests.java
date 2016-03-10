@@ -7,7 +7,7 @@ import java.util.List;
 import com.matthewnewkirk.kudos.containers.CompletedKudo;
 import com.matthewnewkirk.kudos.containers.Kudo;
 import com.matthewnewkirk.kudos.containers.KudoText;
-import com.matthewnewkirk.kudos.containers.User;
+import com.matthewnewkirk.kudos.containers.KudoUser;
 import com.matthewnewkirk.kudos.db.DatabaseAuditor;
 import com.matthewnewkirk.kudos.db.KudoService;
 import com.matthewnewkirk.kudos.db.KudoTextService;
@@ -50,9 +50,9 @@ public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests 
   @Autowired
   private TestH2Manager testH2Manager;
 
-  User bob = new User(0, "bob", "bob@example.com", "test");
-  User sue = new User(0, "sue", "sue@example.com", "test");
-  User alice = new User(0, "alice", "alice@example.com", "test");
+  KudoUser bob = new KudoUser(0, "bob", "bob@example.com", "test");
+  KudoUser sue = new KudoUser(0, "sue", "sue@example.com", "test");
+  KudoUser alice = new KudoUser(0, "alice", "alice@example.com", "test");
   KudoText kudoText = new KudoText("Awesome job building the kudo system!");
 
   @BeforeClass
@@ -69,14 +69,14 @@ public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests 
   }
   @Test
   public void findOrAdd() {
-    User foundBob = userService.findOrAdd(bob);
+    KudoUser foundBob = userService.findOrAdd(bob);
     Assert.assertEquals(foundBob, bob, "We 'found' bob.");
     Assert.assertTrue(foundBob != bob, "Our 'found' bob is not the same object as bob.");
   }
 
 	@Test ()
 	public void testUniqueUsername() {
-    User notAlice = new User(0, "alice", "notAlice@example.com", "test");
+    KudoUser notAlice = new KudoUser(0, "alice", "notAlice@example.com", "test");
     Assert.assertFalse(userService.add(notAlice));
   }
 
@@ -90,8 +90,8 @@ public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests 
     List<CompletedKudo> foundKudos = reportingService.findKudosFor(alice);
     Assert.assertTrue(foundKudos.size() > 0, "Could not find a kudo for Alice.");
     CompletedKudo foundKudo = foundKudos.get(0);
-    Assert.assertTrue(foundKudo.getUsersTo().size() == 2, "Kudo found did not have the correct number of To users.");
-    Assert.assertEquals(foundKudo.getUserFrom(), bob, "Kudo found was not from Bob.");
+    Assert.assertTrue(foundKudo.getKudoUsersTo().size() == 2, "Kudo found did not have the correct number of To users.");
+    Assert.assertEquals(foundKudo.getKudoUserFrom(), bob, "Kudo found was not from Bob.");
     Assert.assertEquals(foundKudo.getText(), kudoText, "Kudo found was not of the correct text.");
   }
 
@@ -105,8 +105,8 @@ public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests 
     List<CompletedKudo> foundKudos = reportingService.findKudosFrom(bob);
     Assert.assertTrue(foundKudos.size() > 0, "Could not find a kudo from Bob.");
     CompletedKudo foundKudo = foundKudos.get(0);
-    Assert.assertTrue(foundKudo.getUsersTo().size() == 2, "Kudo found did not have the correct number of To users.");
-    Assert.assertEquals(foundKudo.getUserFrom(), bob, "Kudo found was not from Bob.");
+    Assert.assertTrue(foundKudo.getKudoUsersTo().size() == 2, "Kudo found did not have the correct number of To users.");
+    Assert.assertEquals(foundKudo.getKudoUserFrom(), bob, "Kudo found was not from Bob.");
     Assert.assertEquals(foundKudo.getText(), kudoText, "Kudo found was not of the correct text.");
   }
   @Test
@@ -118,8 +118,8 @@ public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests 
     List<CompletedKudo> foundKudos = reportingService.findKudosSinceTime(new Date(1));
     Assert.assertTrue(foundKudos.size() > 0, "Could not find a kudo for Alice.");
     CompletedKudo foundKudo = foundKudos.get(0);
-    Assert.assertTrue(foundKudo.getUsersTo().size() == 2, "Kudo found did not have the correct number of To users.");
-    Assert.assertEquals(foundKudo.getUserFrom(), bob, "Kudo found was not from Bob.");
+    Assert.assertTrue(foundKudo.getKudoUsersTo().size() == 2, "Kudo found did not have the correct number of To users.");
+    Assert.assertEquals(foundKudo.getKudoUserFrom(), bob, "Kudo found was not from Bob.");
     Assert.assertEquals(foundKudo.getText(), kudoText, "Kudo found was not of the correct text.");
   }
   @Test

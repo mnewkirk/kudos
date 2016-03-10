@@ -3,13 +3,13 @@ package com.matthewnewkirk.kudos.containers;
 /**
  * @author Matt Newkirk 11/7/2015
  */
-public class User {
+public class KudoUser {
   private int userId;
   private String username;
   private String email;
   private String hashedPassword;
 
-  public User(int userId, String username, String email, String hashedPassword) {
+  public KudoUser(int userId, String username, String email, String hashedPassword) {
     this.userId = userId;
     this.username = username;
     this.email = email;
@@ -42,12 +42,12 @@ public class User {
 
   @Override
   public boolean equals(Object obj) {
-    if (!User.class.isInstance(obj)) {
+    if (!KudoUser.class.isInstance(obj)) {
       return false;
     }
-    User otherUser = (User) obj;
-    return (userId == otherUser.getUserId() &&
-    username.equals(otherUser.getUsername()) &&
-    email.equals(otherUser.getEmail()));
+    KudoUser otherKudoUser = (KudoUser) obj;
+    return (userId == otherKudoUser.getUserId() &&
+    username.equals(otherKudoUser.getUsername()) &&
+    email.equals(otherKudoUser.getEmail()));
   }
 }

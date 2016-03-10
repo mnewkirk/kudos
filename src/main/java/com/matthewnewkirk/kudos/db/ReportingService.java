@@ -3,14 +3,13 @@ package com.matthewnewkirk.kudos.db;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
 import com.matthewnewkirk.kudos.containers.CompletedKudo;
 import com.matthewnewkirk.kudos.containers.Kudo;
 import com.matthewnewkirk.kudos.containers.KudoText;
-import com.matthewnewkirk.kudos.containers.User;
+import com.matthewnewkirk.kudos.containers.KudoUser;
 import com.matthewnewkirk.kudos.util.DBUtil;
 
 import org.slf4j.Logger;
@@ -41,17 +40,17 @@ public class ReportingService {
   @Autowired
   UserService userService;
 
-  public List<CompletedKudo> findKudosFor(User user) {
+  public List<CompletedKudo> findKudosFor(KudoUser kudoUser) {
     List<Kudo> kudos =
       kudoService.findKudosGiven(KudoService.KUDO_USER_TO_ID, "=",
-        String.valueOf(user.getUserId()));
+        String.valueOf(kudoUser.getUserId()));
     return completedKudosFromKudos(kudos);
   }
 
-  public List<CompletedKudo> findKudosFrom(User user) {
+  public List<CompletedKudo> findKudosFrom(KudoUser kudoUser) {
     List<Kudo> kudos =
       kudoService.findKudosGiven(KudoService.KUDO_USER_FROM_ID, "=",
-        String.valueOf(user.getUserId()));
+        String.valueOf(kudoUser.getUserId()));
     return completedKudosFromKudos(kudos);
   }
 
@@ -75,7 +74,7 @@ public class ReportingService {
     List<CompletedKudo> completedKudos = new ArrayList<>();
     for (Kudo kudo : kudos) {
       KudoText kudoText = kudoTextService.findKudoTextById(kudo.getTextId());
-      List<User> sharedKudos = findAllToUsersForSameKudoText(kudo.getTextId());
+      List<KudoUser> sharedKudos = findAllToUsersForSameKudoText(kudo.getTextId());
       completedKudos.add(new CompletedKudo(kudo.getKudoId(), kudoText,
           userService.findUserById(kudo.getUserFromId()),
           sharedKudos, kudo.getDate()));
@@ -83,7 +82,7 @@ public class ReportingService {
     return completedKudos;
   }
 
-  public List<User> findAllToUsersForSameKudoText(int kudoTextId) {
+  public List<KudoUser> findAllToUsersForSameKudoText(int kudoTextId) {
     try {
       return jdbcTemplate.query(
         "select " + UserService.USER_TABLE + "." +
@@ -95,7 +94,7 @@ public class ReportingService {
           UserService.USER_TABLE + "." + UserService.USER_ID + "\n" +
           " where " + KudoService.KUDO_TEXT_ID + " = ?", new Object[]{kudoTextId},
         (rs, rowNum) -> {
-          return new User(rs.getInt(UserService.USER_ID), rs.getString(UserService.USER_NAME),
+          return new KudoUser(rs.getInt(UserService.USER_ID), rs.getString(UserService.USER_NAME),
             rs.getString(UserService.USER_EMAIL), UserService.UNNECESSARY);
         });
     }

@@ -1,8 +1,10 @@
 package com.matthewnewkirk.kudos;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.matthewnewkirk.kudos.containers.User;
+import com.matthewnewkirk.kudos.containers.KudoUser;
 import com.matthewnewkirk.kudos.db.UserService;
 import com.matthewnewkirk.kudos.forms.LoginForm;
 import com.matthewnewkirk.kudos.forms.RegisterUserForm;
@@ -34,7 +36,7 @@ public class UserController {
     if (!bindingResult.hasErrors()) {
       BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
       String hashedPassword = passwordEncoder.encode(registerUserForm.getRawPassword());
-      User newUser = new User(
+      KudoUser newKudoUser = new KudoUser(
         0, registerUserForm.getUsername(), registerUserForm.getEmail(), hashedPassword);
       if (userService.findUserByUsername(registerUserForm.getUsername()) != null) {
         bindingResult.addError(
@@ -42,7 +44,7 @@ public class UserController {
             "registerUserForm", "username", "A user already exists with this username."));
       }
       else {
-        userService.add(newUser);
+        userService.add(newKudoUser);
         registerUserForm.setFeedback(
           "User " + registerUserForm.getUsername() + " has been registered.");
       }
@@ -69,14 +71,14 @@ public class UserController {
     String pageToReturn = "login";
     loginForm.validate(bindingResult);
     if (!bindingResult.hasErrors()) {
-      User foundUser =
+      KudoUser foundKudoUser =
         userService.findUserByUsernameAndPassword(loginForm.getUsername(),
-          loginForm.getRawPassword());
-      if (foundUser == null) {
+          loginForm.getPassword());
+      if (foundKudoUser == null) {
         loginForm.setFeedback("No user could be found with that username and password.");
       }
       else {
-        loginForm.setFeedback("User " + foundUser.getUsername() + " logged in.");
+        loginForm.setFeedback("User " + foundKudoUser.getUsername() + " logged in.");
       }
     }
     model.addAttribute(loginForm);
@@ -89,6 +91,18 @@ public class UserController {
   {
     if (!model.containsAttribute("loginForm")) {
       model.addAttribute(loginForm);
+    }
+    return "login";
+  }
+
+  @RequestMapping(method = RequestMethod.POST, value = "/logout")
+  public String logout(HttpServletRequest request)
+  {
+    try {
+      request.logout();
+    }
+    catch (ServletException ex) {
+      ex.printStackTrace();
     }
     return "login";
   }

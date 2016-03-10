@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import com.matthewnewkirk.kudos.containers.User;
+import com.matthewnewkirk.kudos.containers.KudoUser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +43,9 @@ public class UserService {
 
 
   @Transactional
-  public boolean add(User user) {
-    log.debug("Adding " + user.getUsername() + ", " + user.getEmail());
-    if (findUserByUsername(user.getUsername()) != null) {
+  public boolean add(KudoUser kudoUser) {
+    log.debug("Adding " + kudoUser.getUsername() + ", " + kudoUser.getEmail());
+    if (findUserByUsername(kudoUser.getUsername()) != null) {
       return false;
     }
     userVersion++;
@@ -54,23 +54,23 @@ public class UserService {
         .withTableName(USER_TABLE)
         .usingGeneratedKeyColumns(USER_ID);
     Map<String, Object> parameters = new HashMap<>();
-    parameters.put(USER_NAME, user.getUsername());
-    parameters.put(USER_EMAIL, user.getEmail());
-    parameters.put(USER_PASSWORD, user.getHashedPassword());
+    parameters.put(USER_NAME, kudoUser.getUsername());
+    parameters.put(USER_EMAIL, kudoUser.getEmail());
+    parameters.put(USER_PASSWORD, kudoUser.getHashedPassword());
     Number id = simpleJdbcInsert.executeAndReturnKey(parameters);
-    user.setUserId(id.intValue());
+    kudoUser.setUserId(id.intValue());
     databaseAuditor.observeIdCreated(USER_TABLE, USER_ID, id.intValue());
     return true;
   }
 
-  public User findUserByUsername(String username) {
+  public KudoUser findUserByUsername(String username) {
     try {
       return jdbcTemplate.queryForObject(
         "select " + USER_ID + ", " + USER_NAME + ", " +
           USER_EMAIL + "\n" +
           " from " + USER_TABLE + "\n" +
           " where " + USER_NAME + " = ?", new Object[]{username}, (rs, rowNum) -> {
-            return new User(rs.getInt(USER_ID), rs.getString(USER_NAME),
+            return new KudoUser(rs.getInt(USER_ID), rs.getString(USER_NAME),
               rs.getString(USER_EMAIL), UNNECESSARY);
           });
     }
@@ -79,14 +79,14 @@ public class UserService {
     }
   }
 
-  public User findUserById(int id) {
+  public KudoUser findUserById(int id) {
     try {
       return jdbcTemplate.queryForObject(
         "select " + USER_ID + ", " + USER_NAME + ", " +
           USER_EMAIL + "\n" +
           " from " + USER_TABLE + "\n" +
           " where " + USER_ID + " = ?", new Object[]{id}, (rs, rowNum) -> {
-            return new User(rs.getInt(USER_ID), rs.getString(USER_NAME),
+            return new KudoUser(rs.getInt(USER_ID), rs.getString(USER_NAME),
               rs.getString(USER_EMAIL), UNNECESSARY);
           });
     }
@@ -95,44 +95,44 @@ public class UserService {
     }
   }
 
-  public User findUserByUsernameAndPassword(String username, String rawPassword) {
+  public KudoUser findUserByUsernameAndPassword(String username, String rawPassword) {
     try {
-      User foundUser = jdbcTemplate.queryForObject(
+      KudoUser foundKudoUser = jdbcTemplate.queryForObject(
         "select " + USER_ID + ", " + USER_NAME + ", " +
           USER_EMAIL + ", " + USER_PASSWORD + "\n" +
           " from " + USER_TABLE + "\n" +
           " where " + USER_NAME + " = ?", new Object[]{username}, (rs, rowNum) -> {
-          return new User(rs.getInt(USER_ID), rs.getString(USER_NAME),
+          return new KudoUser(rs.getInt(USER_ID), rs.getString(USER_NAME),
             rs.getString(USER_EMAIL), rs.getString(USER_PASSWORD));
         });
       BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-      if (!passwordEncoder.matches(rawPassword, foundUser.getHashedPassword())) {
+      if (!passwordEncoder.matches(rawPassword, foundKudoUser.getHashedPassword())) {
         return null;
       }
-      return foundUser;
+      return foundKudoUser;
     }
     catch (EmptyResultDataAccessException ex) {
       return null;
     }
   }
 
-  public User findOrAdd(User user) {
-    User newUser = findUserByUsername(user.getUsername());
-    if (newUser == null) {
-        add(user);
-      newUser = user;
+  public KudoUser findOrAdd(KudoUser kudoUser) {
+    KudoUser newKudoUser = findUserByUsername(kudoUser.getUsername());
+    if (newKudoUser == null) {
+        add(kudoUser);
+      newKudoUser = kudoUser;
     }
-    return newUser;
+    return newKudoUser;
   }
 
-  public List<User> findAllUsers() {
+  public List<KudoUser> findAllUsers() {
     try {
       String query = "select " + USER_ID + ", " + USER_NAME + ", " +
         USER_EMAIL + "\n" +
         " from " + USER_TABLE + "\n";
       return jdbcTemplate.query(query,
         (rs, rowNum) -> {
-          return new User(rs.getInt(USER_ID), rs.getString(USER_NAME),
+          return new KudoUser(rs.getInt(USER_ID), rs.getString(USER_NAME),
             rs.getString(USER_EMAIL), UNNECESSARY);
         });
     }
@@ -153,8 +153,8 @@ public class UserService {
       USER_EMAIL + " VARCHAR(100) NOT NULL,\n" +
       USER_PASSWORD + " VARCHAR(100) NOT NULL,\n" +
       "PRIMARY KEY (" + USER_ID + "),\n" +
-      "INDEX " + USER_NAME + " (" + USER_NAME + " ASC),\n" +
-      "UNIQUE INDEX " + USER_EMAIL + " (" + USER_EMAIL + " ASC) );\n";
+      "UNIQUE INDEX " + USER_NAME + " (" + USER_NAME + " ASC),\n" +
+      "INDEX " + USER_EMAIL + " (" + USER_EMAIL + " ASC) );\n";
   }
 
 

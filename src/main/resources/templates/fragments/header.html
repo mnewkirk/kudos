@@ -9,9 +9,12 @@
 </head>
 <body>
 <table style="float: right" th:fragment="headLinks">
-    <tr>
-        <td><a href="/login">Login</a></td>
-        <td><a href="/register">Register</a></td>
+    <tr >
+        <td th:unless="${#httpServletRequest.remoteUser != null}"><a href="/register">Register</a></td>
+        <td th:if="${#httpServletRequest.remoteUser != null}"><form th:action="@{/logout}" method="post">
+            <input type="submit" value="Log out" />
+        </form></td>
+        <td th:if="${#httpServletRequest.requestURI != '/'}"><a href="/">Kudos</a></td>
     </tr>
 </table>
 <form th:fragment="searchTag" action="#" th:action="@{/}" th:object="${searchKudoForm}" method="post">

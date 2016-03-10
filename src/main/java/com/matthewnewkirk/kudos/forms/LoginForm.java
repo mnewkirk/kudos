@@ -1,6 +1,5 @@
 package com.matthewnewkirk.kudos.forms;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
@@ -11,18 +10,18 @@ public class LoginForm {
   public static String defaultUsername = "<username>";
   public static String defaultPassword = "<password>";
   String username;
-  String rawPassword;
+  String password;
   String feedback;
 
-  public LoginForm(String username, String rawPassword) {
+  public LoginForm(String username, String password) {
     this.username = username;
-    this.rawPassword = rawPassword;
+    this.password = password;
     this.feedback = "";
   }
 
   public LoginForm() {
     username = defaultUsername;
-    rawPassword = defaultPassword;
+    password = defaultPassword;
     feedback = "";
   }
 
@@ -34,12 +33,12 @@ public class LoginForm {
     this.username = username;
   }
 
-  public String getRawPassword() {
-    return rawPassword;
+  public String getPassword() {
+    return password;
   }
 
-  public void setRawPassword(String rawPassword) {
-    this.rawPassword = rawPassword;
+  public void setPassword(String password) {
+    this.password = password;
   }
 
   public String getFeedback() {
@@ -55,7 +54,7 @@ public class LoginForm {
       bindingResult.addError(new FieldError("LoginForm", "username",
           "Username must be different than the example!"));
     }
-    if (rawPassword.equals(defaultPassword)) {
+    if (password.equals(defaultPassword)) {
       bindingResult.addError(new FieldError("LoginForm", "password",
           "Password must be different than the example!"));
     }
@@ -67,8 +66,8 @@ public class LoginForm {
       bindingResult.addError(new FieldError("RegisterUserForm", "username",
           "Username must not contain spaces, tabs, or line breaks."));
     }
-    if (rawPassword.length() < 8 || rawPassword.length() > 100) {
-      bindingResult.addError(new FieldError("RegisterUserForm", "rawPassword",
+    if (password.length() < 8 || password.length() > 100) {
+      bindingResult.addError(new FieldError("RegisterUserForm", "password",
           "Password must be between 8 and 100 characters long."));
     }
   }

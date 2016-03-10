@@ -3,11 +3,8 @@ package com.matthewnewkirk.kudos.forms;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.constraints.Pattern;
+import com.matthewnewkirk.kudos.containers.KudoUser;
 
-import com.matthewnewkirk.kudos.containers.User;
-
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
@@ -20,19 +17,19 @@ public class AddKudoForm {
   String userFrom;
   String userTo;
   String feedback;
-  List<User> availableUsers;
+  List<KudoUser> availableKudoUsers;
   long userVersion = -1L;
 
   public AddKudoForm(String kudoText, String userFrom, String userTo) {
     this.text = kudoText;
     this.userFrom = userFrom;
     this.userTo = userTo;
-    availableUsers = new ArrayList<>();
+    availableKudoUsers = new ArrayList<>();
   }
 
   public AddKudoForm() {
     text = defaultText;
-    availableUsers = new ArrayList<>();
+    availableKudoUsers = new ArrayList<>();
   }
 
   public String getText() {
@@ -67,12 +64,12 @@ public class AddKudoForm {
     this.feedback = feedback;
   }
 
-  public List<User> getAvailableUsers() {
-    return availableUsers;
+  public List<KudoUser> getAvailableKudoUsers() {
+    return availableKudoUsers;
   }
 
-  public void setAvailableUsers(List<User> availableUsers) {
-    this.availableUsers = availableUsers;
+  public void setAvailableKudoUsers(List<KudoUser> availableKudoUsers) {
+    this.availableKudoUsers = availableKudoUsers;
   }
 
   public long getUserVersion() {

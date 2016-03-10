@@ -94,7 +94,7 @@ public class RegisterUserForm {
           "Email must be in the form of <name>@<domain>."));
     }
     if (rawPassword.length() < 8 || rawPassword.length() > 100) {
-      bindingResult.addError(new FieldError("RegisterUserForm", "rawPassword",
+      bindingResult.addError(new FieldError("RegisterUserForm", "password",
           "Password must be between 8 and 100 characters long."));
     }
     if (!rawPassword.equals(confirmationPassword)) {
@@ -102,7 +102,7 @@ public class RegisterUserForm {
           "Confirmation password must be equivalent to the password."));
     }
     if (rawPassword.equals(defaultUsername)) {
-      bindingResult.addError(new FieldError("RegisterUserForm", "rawPassword",
+      bindingResult.addError(new FieldError("RegisterUserForm", "password",
           "Password must be different than the username!"));
     }
   }

@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import com.matthewnewkirk.kudos.containers.Kudo;
-import com.matthewnewkirk.kudos.containers.User;
 import com.matthewnewkirk.kudos.util.DBUtil;
 
 import org.slf4j.Logger;

@@ -1,13 +1,7 @@
 package com.matthewnewkirk.kudos.forms;
 
-import java.util.List;
-
-import com.matthewnewkirk.kudos.containers.User;
-
-import org.springframework.validation.AbstractBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DirectFieldBindingResult;
-import org.springframework.validation.ObjectError;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

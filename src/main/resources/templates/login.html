@@ -10,15 +10,15 @@
           th:href="@{/css/kudos.css}" rel="stylesheet" />
 </head>
 <body>
-<table style="float: right">
-    <tr >
-        <td><a href="/register">Register</a></td>
-        <td><a href="/">Kudos</a></td>
-    </tr>
-</table><br/>
-<form th:fragment="login" action="#" th:action="@{/login}" th:object="${loginForm}" method="post">
+<table th:replace="fragments/header :: headLinks" />
+<br/>
+<div th:if="${#httpServletRequest.remoteUser != null}" th:inline="text">You are signed in as [[${#httpServletRequest.remoteUser}]]
+</div>
+
+<form th:fragment="login" th:unless="${#httpServletRequest.remoteUser != null}"
+      action="#" th:action="@{/login}" th:object="${loginForm}" method="post">
     <input type="text" name = "username" id = "username" th:value="*{username}"/>
-    <input type="text" name = "rawPassword" id = "rawPassword" th:value="*{rawPassword}"/>
+    <input type="password" name = "password" id = "password" th:value="*{password}"/>
     <input type="submit" value="Login"/> <input type="reset" value="Reset" />
     <ul>
         <li th:each="err : ${#fields.errors('*')}" th:text="${err}"/>

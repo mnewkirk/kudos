@@ -1,6 +1,7 @@
 package com.matthewnewkirk.kudos.db;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +70,7 @@ public class KudoService {
         (rs, rowNum) -> {
           return new Kudo(rs.getInt(KUDO_ID), rs.getInt(KUDO_TEXT_ID),
             rs.getInt(KUDO_USER_FROM_ID),
-            rs.getInt(KUDO_USER_TO_ID), rs.getDate(KUDO_TIME));
+            rs.getInt(KUDO_USER_TO_ID), new Date(rs.getTimestamp(KUDO_TIME).getTime()));
         });
     }
     catch (EmptyResultDataAccessException ex) {

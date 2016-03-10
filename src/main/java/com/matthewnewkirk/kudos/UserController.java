@@ -34,10 +34,9 @@ public class UserController {
   {
     registerUserForm.validate(bindingResult);
     if (!bindingResult.hasErrors()) {
-      BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-      String hashedPassword = passwordEncoder.encode(registerUserForm.getPassword());
       KudoUser newKudoUser = new KudoUser(
-        0, registerUserForm.getUsername(), registerUserForm.getEmail(), hashedPassword);
+        0, registerUserForm.getUsername(), registerUserForm.getEmail());
+      newKudoUser.setHashedPasswordFromRawPassword(registerUserForm.getPassword());
       if (userService.findUserByUsername(registerUserForm.getUsername()) != null) {
         bindingResult.addError(
           new FieldError(

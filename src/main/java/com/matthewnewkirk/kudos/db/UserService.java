@@ -27,7 +27,6 @@ public class UserService {
   public final static String USER_NAME = "username";
   public final static String USER_EMAIL = "email";
   public final static String USER_PASSWORD = "password";
-  public final static String UNNECESSARY = "unnecessary";
   private final static Logger log = LoggerFactory.getLogger(UserService.class);
   private long userVersion = 0L;
 
@@ -71,7 +70,7 @@ public class UserService {
           " from " + USER_TABLE + "\n" +
           " where " + USER_NAME + " = ?", new Object[]{username}, (rs, rowNum) -> {
             return new KudoUser(rs.getInt(USER_ID), rs.getString(USER_NAME),
-              rs.getString(USER_EMAIL), UNNECESSARY);
+              rs.getString(USER_EMAIL));
           });
     }
     catch (EmptyResultDataAccessException ex) {
@@ -87,7 +86,7 @@ public class UserService {
           " from " + USER_TABLE + "\n" +
           " where " + USER_ID + " = ?", new Object[]{id}, (rs, rowNum) -> {
             return new KudoUser(rs.getInt(USER_ID), rs.getString(USER_NAME),
-              rs.getString(USER_EMAIL), UNNECESSARY);
+              rs.getString(USER_EMAIL));
           });
     }
     catch (EmptyResultDataAccessException ex) {
@@ -96,20 +95,19 @@ public class UserService {
   }
 
   public KudoUser findUserByUsernameAndPassword(String username, String rawPassword) {
+    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     try {
-      KudoUser foundKudoUser = jdbcTemplate.queryForObject(
+      return jdbcTemplate.queryForObject(
         "select " + USER_ID + ", " + USER_NAME + ", " +
           USER_EMAIL + ", " + USER_PASSWORD + "\n" +
           " from " + USER_TABLE + "\n" +
           " where " + USER_NAME + " = ?", new Object[]{username}, (rs, rowNum) -> {
+          if (!passwordEncoder.matches(rawPassword, rs.getString(USER_PASSWORD))) {
+            return null;
+          }
           return new KudoUser(rs.getInt(USER_ID), rs.getString(USER_NAME),
-            rs.getString(USER_EMAIL), rs.getString(USER_PASSWORD));
+            rs.getString(USER_EMAIL));
         });
-      BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-      if (!passwordEncoder.matches(rawPassword, foundKudoUser.getHashedPassword())) {
-        return null;
-      }
-      return foundKudoUser;
     }
     catch (EmptyResultDataAccessException ex) {
       return null;
@@ -133,7 +131,7 @@ public class UserService {
       return jdbcTemplate.query(query,
         (rs, rowNum) -> {
           return new KudoUser(rs.getInt(USER_ID), rs.getString(USER_NAME),
-            rs.getString(USER_EMAIL), UNNECESSARY);
+            rs.getString(USER_EMAIL));
         });
     }
     catch (EmptyResultDataAccessException ex) {
@@ -156,7 +154,5 @@ public class UserService {
       "UNIQUE INDEX " + USER_NAME + " (" + USER_NAME + " ASC),\n" +
       "INDEX " + USER_EMAIL + " (" + USER_EMAIL + " ASC) );\n";
   }
-
-
 }
 

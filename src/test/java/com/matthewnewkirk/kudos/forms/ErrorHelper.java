@@ -11,8 +11,9 @@ public class ErrorHelper {
   /**
    * Collate our errors into a string that can be output.
    */
-  public static String collateErrors(List<ObjectError> allErrors) {
-    StringBuilder stringBuilder = new StringBuilder();
+  public static String collateErrors(List<ObjectError> allErrors, String expectedMessage) {
+    StringBuilder stringBuilder = new StringBuilder(expectedMessage);
+    stringBuilder.append("\n");
     for (ObjectError error : allErrors) {
       stringBuilder.append(error.toString()).append("\n");
     }

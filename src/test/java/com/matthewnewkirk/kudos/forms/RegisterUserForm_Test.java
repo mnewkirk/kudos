@@ -1,5 +1,7 @@
 package com.matthewnewkirk.kudos.forms;
 
+import com.matthewnewkirk.kudos.util.UserUtil;
+
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DirectFieldBindingResult;
 import org.testng.Assert;
@@ -13,65 +15,92 @@ public class RegisterUserForm_Test {
 
   @DataProvider
   private Object[][] formData() {
+    String formName = "RegisterUserForm";
+    String rightLengthUsername =
+      new String(new char[UserUtil.MIN_USERNAME]).replace("\0", "a");
+    String rightLengthPassword =
+      new String(new char[UserUtil.MIN_PASSWORD]).replace("\0", "b");
+    String tooShortPassword = rightLengthPassword.substring(1);
+    String validEmail = "sue@example.com";
     return new Object[][] {
       new Object[] {
-        new RegisterUserForm(RegisterUserForm.defaultUsername, RegisterUserForm.defaultEmail, "foobar01", "foobar01"),
-        new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
-        2
+        new RegisterUserForm(RegisterUserForm.DEFAULT_USERNAME, 
+          RegisterUserForm.DEFAULT_EMAIL, rightLengthPassword, rightLengthPassword),
+        new DirectFieldBindingResult(new AddKudoForm(), formName),
+        2,
+        "Should have failed for default username and default email."
       },
       new Object[] {
-        new RegisterUserForm("test_user", RegisterUserForm.defaultEmail, "foobar01", "foobar01"),
-        new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
-        1
+        new RegisterUserForm(rightLengthUsername, RegisterUserForm.DEFAULT_EMAIL, 
+          rightLengthPassword, rightLengthPassword),
+        new DirectFieldBindingResult(new AddKudoForm(), formName),
+        1,
+        "Should have failed for default email."
       },
       new Object[] {
-        new RegisterUserForm("test user", "sue@example.com", "foobar01", "foobar01"),
-        new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
-        1
+        new RegisterUserForm(rightLengthUsername.replaceFirst("\\S", " "),
+          validEmail, rightLengthPassword, rightLengthPassword),
+        new DirectFieldBindingResult(new AddKudoForm(), formName),
+        1,
+        "Should have failed for space in username."
       },
       new Object[] {
-        new RegisterUserForm("te", "sue@example.com", "foobar01", "foobar01"),
-        new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
-        1
+        new RegisterUserForm(rightLengthUsername.substring(1), 
+          validEmail, rightLengthPassword, rightLengthPassword),
+        new DirectFieldBindingResult(new AddKudoForm(), formName),
+        1,
+        "Should have failed for too short username."
       },
       new Object[] {
-        new RegisterUserForm("test_username", "sue@example.com", "foobar01", "foobar01"),
-        new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
-        1
+        new RegisterUserForm(new String(new char[UserUtil.MAX_USERNAME + 1]).replace("\0", "a"),
+          validEmail, rightLengthPassword, rightLengthPassword),
+        new DirectFieldBindingResult(new AddKudoForm(), formName),
+        1,
+        "Should have failed for too long username."
       },
       new Object[] {
-        new RegisterUserForm("test_user", "sue@example", "foobar01", "foobar01"),
-        new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
-        1
+        new RegisterUserForm(rightLengthUsername, "sue@example", 
+          rightLengthPassword, rightLengthPassword),
+        new DirectFieldBindingResult(new AddKudoForm(), formName),
+        1,
+        "Should have failed for invalid email address format."
       },
       new Object[] {
-        new RegisterUserForm("test_user", "sue@example.com", "foobar01", "bar"),
-        new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
-        1
+        new RegisterUserForm(rightLengthUsername, validEmail, 
+          rightLengthPassword, tooShortPassword),
+        new DirectFieldBindingResult(new AddKudoForm(), formName),
+        1,
+        "Should have failed for confirmation password mismatch."
       },
       new Object[] {
-        new RegisterUserForm("test_user", "sue@example.com", "foobar0", "foobar0"),
-        new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
-        1
+        new RegisterUserForm(rightLengthUsername, validEmail, 
+          tooShortPassword, tooShortPassword),
+        new DirectFieldBindingResult(new AddKudoForm(), formName),
+        1,
+        "Should have failed for too-short password."
       },
       new Object[] {
-        new RegisterUserForm("test_user", "sue@example.com", "", ""),
-        new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
-        1
+        new RegisterUserForm(rightLengthUsername, validEmail, "", ""),
+        new DirectFieldBindingResult(new AddKudoForm(), formName),
+        1,
+        "Should have failed for blank password."
       },
       new Object[] {
-        new RegisterUserForm("test_user", "sue@example.com", "foobar01", "foobar01"),
-        new DirectFieldBindingResult(new AddKudoForm(), "RegisterUserForm"),
-        0
+        new RegisterUserForm(rightLengthUsername, validEmail, 
+          rightLengthPassword, rightLengthPassword),
+        new DirectFieldBindingResult(new AddKudoForm(), formName),
+        0,
+        "Should have succeeded."
       },
     };
   }
 
   @Test(dataProvider = "formData")
-  public void testValidation(RegisterUserForm form, BindingResult bindingResult, int expectedErrors) {
+  public void testValidation(RegisterUserForm form, BindingResult bindingResult,
+                             int expectedErrors, String expectedMessage) {
     form.validate(bindingResult);
     Assert.assertEquals(bindingResult.getErrorCount(), expectedErrors,
-      ErrorHelper.collateErrors(bindingResult.getAllErrors()));
+      ErrorHelper.collateErrors(bindingResult.getAllErrors(), expectedMessage));
 
   }
 }

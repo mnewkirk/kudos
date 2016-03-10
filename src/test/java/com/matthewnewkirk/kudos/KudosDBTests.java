@@ -14,6 +14,7 @@ import com.matthewnewkirk.kudos.db.KudoTextService;
 import com.matthewnewkirk.kudos.db.ReportingService;
 import com.matthewnewkirk.kudos.db.TestH2Manager;
 import com.matthewnewkirk.kudos.db.UserService;
+import com.matthewnewkirk.kudos.util.UserUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -50,15 +51,19 @@ public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests 
   @Autowired
   private TestH2Manager testH2Manager;
 
-  KudoUser bob = new KudoUser(0, "bob", "bob@example.com", "test");
-  KudoUser sue = new KudoUser(0, "sue", "sue@example.com", "test");
-  KudoUser alice = new KudoUser(0, "alice", "alice@example.com", "test");
+  KudoUser bob = new KudoUser(0, "bob", "bob@example.com");
+  KudoUser sue = new KudoUser(0, "sue", "sue@example.com");
+  KudoUser alice = new KudoUser(0, "alice", "alice@example.com");
   KudoText kudoText = new KudoText("Awesome job building the kudo system!");
+  String validPassword = new String(new char[UserUtil.MIN_PASSWORD]).replaceAll("\0", "a");
 
   @BeforeClass
   public void createThings() {
     testH2Manager.deleteTestDatabases();
     testH2Manager.createTestDatabases();
+    bob.setHashedPasswordFromRawPassword(validPassword);
+    sue.setHashedPasswordFromRawPassword(validPassword);
+    alice.setHashedPasswordFromRawPassword(validPassword);
     Assert.assertTrue(userService.add(bob));
     userService.findOrAdd(sue);
     userService.findOrAdd(alice);
@@ -67,19 +72,6 @@ public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests 
     kudoService.add(new Kudo(0, kudoText.getTextId(), bob.getUserId(), sue.getUserId(), now));
     kudoService.add(new Kudo(0, kudoText.getTextId(), bob.getUserId(), alice.getUserId(), now));
   }
-  @Test
-  public void findOrAdd() {
-    KudoUser foundBob = userService.findOrAdd(bob);
-    Assert.assertEquals(foundBob, bob, "We 'found' bob.");
-    Assert.assertTrue(foundBob != bob, "Our 'found' bob is not the same object as bob.");
-  }
-
-	@Test ()
-	public void testUniqueUsername() {
-    KudoUser notAlice = new KudoUser(0, "alice", "notAlice@example.com", "test");
-    Assert.assertFalse(userService.add(notAlice));
-  }
-
   @Test
   public void findKudoTextLike() {
     Assert.assertNotNull(kudoTextService.findKudoTextLike("%kudo system%"));
@@ -124,8 +116,8 @@ public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests 
   }
   @Test
   public void findNoKudosSince() {
-    Assert.assertTrue(reportingService.findKudosSinceTime(new Date()).isEmpty(),
-      "Somehow kudos were created at the same instant as our search!");
+    Assert.assertTrue(
+      reportingService.findKudosSinceTime(new Date()).isEmpty(), "Somehow kudos were created at the same instant as our search!");
   }
   @Test
   public void cantFindKudoText() {
@@ -136,11 +128,6 @@ public class KudosDBTests extends AbstractTransactionalTestNGSpringContextTests 
   public void cantFindKudos() {
     Assert.assertTrue(reportingService.findAllToUsersForSameKudoText(-1).isEmpty());
     Assert.assertTrue(kudoService.findKudosGiven(KudoService.KUDO_TIME, "<", "0000-01-01 00:00:00").isEmpty());
-  }
-  @Test
-  public void cantFindUser() {
-    Assert.assertNull(userService.findUserByUsername(""));
-    Assert.assertNull(userService.findUserById(-1));
   }
   @AfterClass
   public void cleanUp() throws SQLException {

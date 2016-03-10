@@ -95,7 +95,7 @@ public class ReportingService {
           " where " + KudoService.KUDO_TEXT_ID + " = ?", new Object[]{kudoTextId},
         (rs, rowNum) -> {
           return new KudoUser(rs.getInt(UserService.USER_ID), rs.getString(UserService.USER_NAME),
-            rs.getString(UserService.USER_EMAIL), UserService.UNNECESSARY);
+            rs.getString(UserService.USER_EMAIL));
         });
     }
     catch (EmptyResultDataAccessException ex) {

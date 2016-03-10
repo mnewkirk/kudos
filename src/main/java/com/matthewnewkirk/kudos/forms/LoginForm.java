@@ -1,5 +1,7 @@
 package com.matthewnewkirk.kudos.forms;
 
+import com.matthewnewkirk.kudos.util.UserUtil;
+
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
@@ -58,17 +60,19 @@ public class LoginForm {
       bindingResult.addError(new FieldError("LoginForm", "password",
           "Password must be different than the example!"));
     }
-    if (username.length() < 3 || username.length() > 12) {
+    if (username.length() < UserUtil.MIN_USERNAME || username.length() > UserUtil.MAX_USERNAME) {
       bindingResult.addError(new FieldError("RegisterUserForm", "username",
-          "Username must be at least 3 characters and no longer than 12 characters."));
+          "Username must be at least " + UserUtil.MIN_USERNAME +
+            " characters and no longer than " + UserUtil.MAX_USERNAME + " characters."));
     }
     if (username.matches(".*\\s.*")) {
       bindingResult.addError(new FieldError("RegisterUserForm", "username",
           "Username must not contain spaces, tabs, or line breaks."));
     }
-    if (password.length() < 8 || password.length() > 100) {
+    if (password.length() < UserUtil.MIN_PASSWORD || password.length() > UserUtil.MAX_PASSWORD) {
       bindingResult.addError(new FieldError("RegisterUserForm", "password",
-          "Password must be between 8 and 100 characters long."));
+          "Password must be between " + UserUtil.MIN_PASSWORD +
+            " and " + UserUtil.MAX_PASSWORD + " characters long."));
     }
   }
 }
